@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tamll.learn.dao.AdminMapping" >
+    <resultMap id="BaseResultMap" type="com.tamll.learn.entiy.Admin">
+        <id column="admin_id" property="admin_Id" jdbcType="INTEGER"/>
+        <result column="admin_name" property="admin_Name" jdbcType="VARCHAR"/>
+        <result column="admin_password" property="admin_Password" jdbcType="VARCHAR"/>
+        <result column="admin_nick_name" property="admin_NickName" jdbcType="VARCHAR"/>
+        <result column="admin_phone" property="admin_Phone" jdbcType="VARCHAR"/>
+        <result column="admin_email" property="admin_Email" jdbcType="VARCHAR"/>
+        <result column="admin_address" property="admin_Address" jdbcType="VARCHAR"/>
+        <result column="admin_emp_id" property="admin_Emp_Id" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        admin_id,admin_name,admin_password,admin_nick_name,admin_phone,admin_email,admin_address,admin_emp_id
+    </sql>
+    <select id="selectAdminByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM admin
+        WHERE admin_name=#{admin_Name,jdbcType=VARCHAR}
+    </select>
+</mapper>

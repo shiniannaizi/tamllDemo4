@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tamll.learn.dao.ReciveMapping" >
+    <resultMap id="BaseResultMap" type="com.tamll.learn.entiy.Recive" >
+        <id column="user_recive_id" property="user_Recive_Id" jdbcType="INTEGER"/>
+        <result column="user_recive_name" property="user_Recive_Name" jdbcType="VARCHAR" />
+        <result column="user_recive_phone" property="user_Recive_Phone" jdbcType="VARCHAR" />
+        <result column="user_recive_address" property="user_Recive_Address" jdbcType="VARCHAR" />
+        <result column="user_recive_detail_address" property="user_Recive_Detail_Address" jdbcType="VARCHAR" />
+
+        <association property="user" javaType="com.tamll.learn.entiy.User">
+            <id column="user_id" property="user_Id" jdbcType="INTEGER" />
+            <result column="user_name" property="user_Name" jdbcType="VARCHAR" />
+            <result column="user_sex" property="user_Sex" jdbcType="VARCHAR" />
+            <result column="user_password" property="user_Password" jdbcType="VARCHAR" />
+            <result column="user_address" property="user_Address" jdbcType="VARCHAR" />
+            <result column="user_email" property="user_Email" jdbcType="VARCHAR" />
+            <result column="state" property="state" jdbcType="INTEGER" />
+        </association>
+    </resultMap>
+    <resultMap id="ReciveList" type="com.tamll.learn.entiy.Recive" >
+        <id column="user_recive_id" property="user_Recive_Id" jdbcType="INTEGER"/>
+        <result column="user_recive_name" property="user_Recive_Name" jdbcType="VARCHAR" />
+        <result column="user_recive_phone" property="user_Recive_Phone" jdbcType="VARCHAR" />
+        <result column="user_recive_address" property="user_Recive_Address" jdbcType="VARCHAR" />
+        <result column="user_recive_detail_address" property="user_Recive_Detail_Address" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        user_recive_id, user_recive_name, user_recive_phone, user_recive_address, user_recive_detail_address
+    </sql>
+    <select id="selectReciveByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from recive
+        where user_id = #{user_Id,jdbcType=INTEGER}
+    </select>
+    <select id="selectListReciveByUserId" resultMap="ReciveList" parameterType="java.lang.Integer">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM recive
+        WHERE user_id = #{user_Id,jdbcType=INTEGER}
+    </select>
+    <select id="selectReciveById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from recive
+        where user_recive_id = #{user_Recive_Id,jdbcType=INTEGER}
+    </select>
+    <insert id="insert" parameterType="com.tamll.learn.entiy.Recive">
+        insert into recive (user_recive_name, user_recive_phone, user_recive_address,user_recive_detail_address,user_id)
+        values(#{user_Recive_Name,jdbcType=VARCHAR},#{user_Recive_Phone,jdbcType=VARCHAR},
+        #{user_Recive_Address,jdbcType=VARCHAR},#{user_Recive_Detail_Address,jdbcType=VARCHAR},
+        #{user,javaType=com.tamll.learn.entiy.User,jdbcType=INTEGER,typeHandler=com.tamll.learn.handler.UserTypeHandler})
+    </insert>
+    <update id="updateByReciveId" parameterType="java.lang.Integer">
+        update recive
+        set
+        user_recive_name = #{user_Recive_Name,jdbcType=VARCHAR},
+        user_recive_phone = #{user_Recive_Phone,jdbcType=VARCHAR},
+        user_recive_address = #{user_Recive_Address,jdbcType=VARCHAR},
+        user_recive_detail_address = #{user_Recive_Detail_Address,jdbcType=VARCHAR}
+        where user_recive_id = #{user_Recive_Id,jdbcType=INTEGER}
+    </update>
+    <delete id="deleteByReciveId" parameterType="java.lang.Integer">
+        delete from recive
+        where user_recive_id = #{user_Recive_Id,jdbcType=INTEGER}
+    </delete>
+</mapper>

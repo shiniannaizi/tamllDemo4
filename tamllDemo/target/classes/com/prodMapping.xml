@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tamll.learn.dao.ProductMapping" >
+    <resultMap id="BaseResultMap" type="com.tamll.learn.entiy.Product">
+        <id column="product_id" property="product_Id" jdbcType="BIGINT"/>
+        <result property="product_Name" column="product_name" jdbcType="VARCHAR"/>
+        <result column="product_orignal_price" property="product_Orignal_Price" jdbcType="DOUBLE"/>
+        <result column="product_promote_price" property="product_Promote_Price" jdbcType="DOUBLE"/>
+        <result column="product_stock" property="product_Stock" jdbcType="INTEGER"/>
+        <result column="product_update_date" property="product_Update_Date" jdbcType="TIMESTAMP"/>
+        <result column="product_create_date" property="product_Create_Date" jdbcType="TIMESTAMP"/>
+        <result column="product_subtitle" property="product_Subtitle" jdbcType="CLOB"/>
+        <result column="product_first_image" property="product_First_Image" jdbcType="VARCHAR"/>
+        <result column="product_status" property="product_Status" jdbcType="INTEGER"/>
+
+        <association property="category" javaType="com.tamll.learn.entiy.Category">
+            <id column="category_id" property="category_Id" jdbcType="INTEGER" />
+            <result column="category_name" property="category_Name" jdbcType="VARCHAR"/>
+        </association>
+        
+        <collection property="propertyValues" ofType="com.tamll.learn.entiy.PropertyValue">
+            <id column="property_value_id" property="property_Value_Id" jdbcType="INTEGER"/>
+            <result column="property_value_value" property="property_Value_Value" jdbcType="VARCHAR"/>
+        </collection>
+
+        <collection property="productImages" ofType="com.tamll.learn.entiy.ProductImage">
+            <id column="product_image_id" property="product_Image_Id" jdbcType="INTEGER"/>
+            <result column="product_image_address" property="product_Image_Address" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+    <sql id="Base_Column_List">
+        product_id,product_Name,product_orignal_price,product_promote_price,product_stock,product_update_date,
+        product_create_date,product_subtitle,product_status,product_first_image
+    </sql>
+    <insert id="insert" parameterType="com.tamll.learn.entiy.Product">
+        INSERT INTO product(product_id,product_Name,product_orignal_price,product_promote_price,product_stock,
+                            product_update_date,product_create_date,product_subtitle,product_first_image,product_status,
+                            product_category_id)
+                VALUES (#{product_Id,jdbcType=BIGINT},#{product_Name,jdbcType=VARCHAR},#{product_Orignal_Price,
+                jdbcType=DOUBLE},#{product_Promote_Price,jdbcType=DOUBLE},#{product_Stock,jdbcType=INTEGER},
+                #{product_Update_Date,jdbcType=TIMESTAMP},#{product_Create_Date,jdbcType=TIMESTAMP},#{product_Subtitle,
+                jdbcType=CLOB},#{product_First_Image,jdbcType=VARCHAR},#{product_Status,jdbcType=INTEGER},
+                #{category,jdbcType=INTEGER,javaType=com.tamll.learn.entiy.Category,
+                typeHandler=com.tamll.learn.handler.CategoryTypeHanlder})
+    </insert>
+    <select id="selectProductById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM product
+        WHERE product_id=#{product_Id,jdbcType=BIGINT}
+    </select>
+    <select id="selectFullProductById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        p.*,c.*,pv.*,pi.*
+        FROM product p
+        LEFT OUTER JOIN category c ON c.category_id=p.product_category_id
+        LEFT OUTER JOIN property_value pv ON pv.property_value_product_id=p.product_id
+        LEFT OUTER JOIN product_image pi ON pi.product_image_product_id=p.product_id
+        WHERE p.product_id=#{product_Id,jdbcType=BIGINT}
+    </select>
+    <select id="selectAllProduct" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM product
+    </select>
+    <update id="updateProductById" parameterType="java.lang.Long">
+        UPDATE product
+        SET product_Name = #{product_name,jdbcType=VARCHAR},
+            product_orignal_price = #{product_Orignal_Price,jdbcType=DOUBLE},
+            product_promote_price = #{product_Promote_Price,jdbcType=DOUBLE},
+            product_stock = #{product_Stock,jdbcType=INTEGER},
+            product_update_date = #{product_Update_Date,jdbcType=TIMESTAMP},
+            product_subtitle = #{product_Subtitle,jdbcType=CLOB},
+            product_status = #{product_Status,jdbcType=INTEGER},
+            product_first_image = #{product_First_Image,jdbcType=VARCHAR}
+        WHERE product_id=#{product_Id,jdbcType=BIGINT}
+    </update>
+    <delete id="deleteProductById" parameterType="java.lang.Long">
+        DELETE FROM product
+        WHERE product_id=#{product_Id,jdbcType=BIGINT}
+    </delete>
+</mapper>

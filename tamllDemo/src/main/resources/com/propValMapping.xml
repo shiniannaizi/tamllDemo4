@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tamll.learn.dao.PropertyValueMapping" >
+    <resultMap id="BaseResultMap" type="com.tamll.learn.entiy.PropertyValue">
+        <id column="property_value_id" property="property_Value_Id" jdbcType="INTEGER"/>
+        <result column="property_value_value" property="property_Value_Value" jdbcType="VARCHAR"/>
+
+        <association property="property" javaType="com.tamll.learn.entiy.Property">
+            <id column="property_id" property="property_Id" jdbcType="INTEGER"/>
+            <result column="property_name" property="property_Name" jdbcType="VARCHAR"/>
+        </association>
+
+        <association property="product" javaType="com.tamll.learn.entiy.Product">
+            <id column="product_id" property="product_Id" jdbcType="BIGINT"/>
+            <result property="product_Name" column="product_name" jdbcType="VARCHAR"/>
+            <result column="product_orignal_price" property="product_Orignal_Price" jdbcType="DOUBLE"/>
+            <result column="product_promote_price" property="product_Promote_Price" jdbcType="DOUBLE"/>
+            <result column="product_stock" property="product_Stock" jdbcType="INTEGER"/>
+            <result column="product_update_date" property="product_Update_Date" jdbcType="TIMESTAMP"/>
+            <result column="product_create_date" property="product_Create_Date" jdbcType="TIMESTAMP"/>
+            <result column="product_subtitle" property="product_Subtitle" jdbcType="CLOB"/>
+            <result column="product_first_image" property="product_First_Image" jdbcType="VARCHAR"/>
+            <result column="product_status" property="product_Status" jdbcType="INTEGER"/>
+        </association>
+    </resultMap>
+    <resultMap id="ValueResultMap" type="com.tamll.learn.entiy.PropertyValue">
+        <id column="property_value_id" property="property_Value_Id" jdbcType="INTEGER"/>
+        <result column="property_value_value" property="property_Value_Value" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        property_value_id,property_value_value
+    </sql>
+    <insert id="insert" parameterType="com.tamll.learn.entiy.PropertyValue">
+        INSERT INTO property_value(property_value_value,property_value_property_id,property_value_product_id)
+                VALUES (#{property_Value_Value,jdbcType=VARCHAR},
+                #{property,jdbcType=INTEGER,javaType=com.tamll.learn.entiy.Property,
+                typeHandler=com.tamll.learn.handler.PropertyTypeHandler},
+                #{product,jdbcType=BIGINT,javaType=com.tamll.learn.entiy.Product,
+                typeHandler=com.tamll.learn.handler.ProductTypeHandler})
+    </insert>
+    <select id="selectPropertyValueByProductId" parameterType="java.lang.Long" resultMap="ValueResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM property_value
+        WHERE property_value_product_id=#{productId,jdbcType=BIGINT}
+    </select>
+    <select id="selectFullePropertyValue" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+            p.*,pv.*,pr.*
+        FROM property_value pv
+        LEFT OUTER JOIN property p ON p.property_id=pv.property_value_property_id
+        LEFT OUTER JOIN product pr ON pr.product_id=pv.property_value_product_id
+        WHERE property_value_id=#{property_Value_Id,jdbcType=INTEGER}
+    </select>
+    <select id="selectPropertyValueByPropertyId" parameterType="java.lang.Integer" resultMap="ValueResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM property_value
+        WHERE property_value_property_id=#{propertyId,jdbcType=INTEGER}
+    </select>
+    <update id="updatePropertyValueByProductIdAndPropertyId">
+        UPDATE property_value
+        SET property_value_value=#{property_Value_Value,jdbcType=VARCHAR}
+        WHERE property_value_product_id=#{productId,jdbcType=BIGINT} AND
+              property_value_property_id=#{propertyId,jdbcType=INTEGER}
+    </update>
+    <delete id="deletePropertyValueByProductIdAndPropertyId">
+        DELETE FROM property_value
+        WHERE property_value_product_id=#{productId,jdbcType=BIGINT} AND
+              property_value_property_id=#{propertyId,jdbcType=INTEGER}
+    </delete>
+</mapper>
