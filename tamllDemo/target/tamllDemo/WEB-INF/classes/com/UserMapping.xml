@@ -42,11 +42,12 @@
         FROM user
         WHERE user_email = #{user_Email,jdbcType=VARCHAR}
     </select>
-    <select id="selectReciveByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="selectRecivesByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         SELECT
-        <include refid="Base_Column_List" />,<include refid="Recive_Colum_List" />
-        FROM user u,recive r
-        WHERE u.user_id = r.user_id and u.user_id = #{user_Id,jdbcType=INTEGER}
+        u.*,r.*
+        FROM user u
+        LEFT OUTER JOIN recive r ON r.user_id = u.user_id
+        WHERE u.user_id = #{user_Id,jdbcType=INTEGER}
     </select>
     <insert id="insert" parameterType="com.tamll.learn.entiy.User">
         INSERT INTO user (user_name,user_sex,user_password,user_address,user_email,state)

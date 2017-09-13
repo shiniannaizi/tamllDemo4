@@ -17,4 +17,6 @@ public interface CategoryMapping {
 
     Category selectCategoryById(Integer categoryId);
 
+    Category selectCategoryByName(String categoryName);
+
 }

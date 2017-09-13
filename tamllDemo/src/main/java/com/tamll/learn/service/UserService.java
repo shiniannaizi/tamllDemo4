@@ -104,5 +104,7 @@ public class UserService {
         userMapping.deleteByUserId(userId);
     }
 
-
+    public User getFullUserById(Integer userId){
+        return userMapping.selectRecivesByUserId(userId);
+    }
 }

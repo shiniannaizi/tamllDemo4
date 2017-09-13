@@ -24,4 +24,6 @@ public interface PropertyValueMapping {
 
     int deletePropertyValueByProductIdAndPropertyId(@Param("productId")long productId,
                                                     @Param("propertyId")Integer propertyId);
+
+    int deletePropertyValueByProductId(long productId);
 }

@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="${context}/DataTables/css/prodInfo.css"/>
 </head>
 <body>
+<%@include file="/_head.jsp"%>
 <div id="warp">
     <div id="left">
         <div id="left_top">
@@ -58,5 +59,6 @@
         </div>
     </form>
 </div>
+<%@include file="/_foot.jsp"%>
 </body>
 </html>

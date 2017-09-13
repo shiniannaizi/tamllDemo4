@@ -20,4 +20,6 @@ public interface UserMapping {
     User selectUserByEmail(String email);
 
     int updateStateByEmail(String email);
+
+    User selectRecivesByUserId(int userId);
 }

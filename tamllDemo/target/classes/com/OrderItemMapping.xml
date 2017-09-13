@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tamll.learn.dao.OrderItemMapping" >
+    <resultMap id="BaseResultMap" type="com.tamll.learn.entiy.OrderItem">
+        <id column="orderitem_id" property="orderItem_Id" jdbcType="INTEGER"/>
+        <result column="orderitem_user_id" property="orderItem_User_Id" jdbcType="INTEGER"/>
+        <result column="orderitem_product_number" property="orderItem_Product_Number" jdbcType="INTEGER"/>
+        
+        <association property="order" javaType="com.tamll.learn.entiy.Order">
+            <id column="order_id" property="order_Id" jdbcType="INTEGER"/>
+            <result column="order_number" property="order_Number" jdbcType="VARCHAR"/>
+            <result column="order_create_date" property="order_Create_Date" jdbcType="TIMESTAMP"/>
+            <result column="order_pay_date" property="order_Pay_Date" jdbcType="TIMESTAMP"/>
+            <result column="order_post_name" property="order_Post_Name" jdbcType="VARCHAR"/>
+            <result column="order_post_address" property="order_Post_Address" jdbcType="VARCHAR"/>
+            <result column="order_confim_date" property="order_Confim_Date" jdbcType="TIMESTAMP"/>
+            <result column="order_delivery_date" property="order_Delivery_Date" jdbcType="TIMESTAMP"/>
+            <result column="order_total" property="order_Total" jdbcType="DOUBLE"/>
+            <result column="order_status" property="order_Status" jdbcType="INTEGER"/>
+            <result column="order_total_number" property="order_Total_Number" jdbcType="INTEGER"/>
+            <result column="order_recive_info" property="order_Recive_Info" jdbcType="VARCHAR"/>
+        </association>
+
+        <association property="product" javaType="com.tamll.learn.entiy.Product">
+            <id column="product_id" property="product_Id" jdbcType="BIGINT"/>
+            <result property="product_Name" column="product_name" jdbcType="VARCHAR"/>
+            <result column="product_orignal_price" property="product_Orignal_Price" jdbcType="DOUBLE"/>
+            <result column="product_promote_price" property="product_Promote_Price" jdbcType="DOUBLE"/>
+            <result column="product_stock" property="product_Stock" jdbcType="INTEGER"/>
+            <result column="product_update_date" property="product_Update_Date" jdbcType="TIMESTAMP"/>
+            <result column="product_create_date" property="product_Create_Date" jdbcType="TIMESTAMP"/>
+            <result column="product_subtitle" property="product_Subtitle" jdbcType="CLOB"/>
+            <result column="product_first_image" property="product_First_Image" jdbcType="VARCHAR"/>
+            <result column="product_status" property="product_Status" jdbcType="INTEGER"/>
+        </association>
+    </resultMap>
+    <insert id="insert" parameterType="com.tamll.learn.entiy.OrderItem">
+        INSERT INTO orderitem(orderitem_user_id,orderitem_product_id,orderitem_product_number,
+                              orderitem_order_number)
+                VALUES (#{orderItem_User_Id,jdbcType=INTEGER},
+                #{product,jdbcType=BIGINT,javaType=com.tamll.learn.entiy.Product,
+                typeHandler=com.tamll.learn.handler.ProductTypeHandler},
+                #{orderItem_Product_Number,jdbcType=INTEGER},
+                #{order,jdbcType=VARCHAR,javaType=com.tamll.learn.entiy.Order,
+                typeHandler=com.tamll.learn.handler.OrderTypeHandler})
+    </insert>
+    <select id="selectOrderItemByOrderNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+            oi.*,p.*
+        FROM orderitem oi
+        LEFT OUTER JOIN product p ON p.product_id=oi.orderitem_product_id
+        WHERE oi.orderitem_order_number=#{orderNumber,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteOrderItemByOrderNumber" parameterType="java.lang.String">
+        DELETE FROM orderitem
+        WHERE orderitem_order_number=#{orderNumber,jdbcType=VARCHAR}
+    </delete>
+</mapper>

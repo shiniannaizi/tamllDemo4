@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tamll.learn.dao.OrderMapping" >
+    <resultMap id="BaseResultMap" type="com.tamll.learn.entiy.Order">
+        <id column="order_id" property="order_Id" jdbcType="INTEGER"/>
+        <result column="order_number" property="order_Number" jdbcType="VARCHAR"/>
+        <result column="order_create_date" property="order_Create_Date" jdbcType="TIMESTAMP"/>
+        <result column="order_pay_date" property="order_Pay_Date" jdbcType="TIMESTAMP"/>
+        <result column="order_post_name" property="order_Post_Name" jdbcType="VARCHAR"/>
+        <result column="order_post_address" property="order_Post_Address" jdbcType="VARCHAR"/>
+        <result column="order_confim_date" property="order_Confim_Date" jdbcType="TIMESTAMP"/>
+        <result column="order_delivery_date" property="order_Delivery_Date" jdbcType="TIMESTAMP"/>
+        <result column="order_total" property="order_Total" jdbcType="DOUBLE"/>
+        <result column="order_status" property="order_Status" jdbcType="INTEGER"/>
+        <result column="order_total_number" property="order_Total_Number" jdbcType="INTEGER"/>
+        <result column="order_recive_info" property="order_Recive_Info" jdbcType="VARCHAR"/>
+
+        <collection property="orderItems" ofType="com.tamll.learn.entiy.OrderItem">
+            <id column="orderitem_id" property="orderItem_Id" jdbcType="INTEGER"/>
+            <result column="orderitem_user_id" property="orderItem_User_Id" jdbcType="INTEGER"/>
+            <result column="orderitem_product_number" property="orderItem_Product_Number" jdbcType="INTEGER"/>
+        </collection>
+    </resultMap>
+    <insert id="insert" parameterType="com.tamll.learn.entiy.Order">
+        INSERT INTO t_order(order_number,order_create_date,order_total,order_status,
+                          order_total_number,order_recive_info)
+                VALUES (#{order_Number,jdbcType=VARCHAR},#{order_Create_Date,jdbcType=TIMESTAMP},
+                #{order_Total,jdbcType=DOUBLE},#{order_Status,jdbcType=INTEGER},
+                #{order_Total_Number,jdbcType=INTEGER},#{order_Recive_Info,jdbcType=VARCHAR})
+    </insert>
+    <select id="getFullOrderByNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+            o.*,oi.*
+        FROM t_order o
+        LEFT OUTER JOIN orderitem oi ON oi.orderitem_order_number=o.order_number
+        WHERE o.order_number=#{order_Number,jdbcType=VARCHAR}
+    </select>
+    <select id="getOrderByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+            DISTINCT o.*,oi.*
+        FROM t_order o
+        LEFT OUTER JOIN orderitem oi ON oi.orderitem_order_number=o.order_number
+        WHERE oi.orderitem_user_id=#{userId,jdbcType=INTEGER}
+    </select>
+    <select id="getOrderByNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+            o.*
+        FROM t_order o
+        WHERE o.order_number=#{order_Number,jdbcType=VARCHAR}
+    </select>
+    <update id="updateOrderByNumber" parameterType="java.lang.String">
+        UPDATE t_order
+        SET order_pay_date=#{order_Pay_Date,jdbcType=TIMESTAMP},
+            order_post_name=#{order_Post_Name,jdbcType=VARCHAR},
+            order_post_address=#{order_Post_Address,jdbcType=VARCHAR},
+            order_confim_date=#{order_Confim_Date,jdbcType=TIMESTAMP},
+            order_delivery_date=#{order_Delivery_Date,jdbcType=TIMESTAMP},
+            order_status=#{order_Status,jdbcType=INTEGER},
+            order_recive_info=#{order_Recive_Info,jdbcType=VARCHAR}
+        WHERE order_number=#{order_Number,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteOrderByNumber" parameterType="java.lang.String">
+        DELETE FROM t_order
+        WHERE order_number=#{order_Number,jdbcType=VARCHAR}
+    </delete>
+</mapper>

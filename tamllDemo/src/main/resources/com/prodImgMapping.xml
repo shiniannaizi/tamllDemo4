@@ -29,16 +29,21 @@
         INSERT INTO product_image(product_image_address,product_image_product_id)
                 VALUES (#{product_Image_Address,jdbcType=VARCHAR},
                         #{product,jdbcType=BIGINT,javaType=com.tamll.learn.entiy.Product,
-                        typeHandler=com.tamll.learn.handler.ProductTypeHandler})
+                typeHandler=com.tamll.learn.handler.ProductTypeHandler})
     </insert>
-    <select id="selectProductImageByProductId" resultMap="ValueResultMap" parameterType="java.lang.Long">
+    <select id="selectProductImageByProductId" resultMap="BaseResultMap" parameterType="java.lang.Long">
         SELECT
-            <include refid="Base_Column_List"/>
-        FROM product_image
-        WHERE product_image_product_id=#{productId,jdbcType=BIGINT}
+            pi.*,p.*
+        FROM product_image pi
+        LEFT OUTER JOIN product p ON p.product_id=pi.product_image_product_id
+        WHERE pi.product_image_product_id=#{productId,jdbcType=BIGINT}
     </select>
     <delete id="deleteProductImageById" parameterType="java.lang.Integer">
         DELETE FROM product_image
         WHERE product_image_id=#{product_Image_Id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteProductImageByProductId" parameterType="java.lang.Long">
+        DELETE FROM product_image
+        WHERE product_image_product_id=#{productId,jdbcType=BIGINT}
     </delete>
 </mapper>

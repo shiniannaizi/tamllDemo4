@@ -22,7 +22,8 @@
 </head>
 <body>
    <div>
-       <form action="#" method="post">
+       <form action="${context}/backend/updateproductinfo/${product.product_Id }"
+             method="post" enctype="multipart/form-data">
            <div>
                <table border="1px" width="50%" STYLE="margin: 0 auto">
                    <tr>
@@ -81,6 +82,7 @@
                                <img style="width: 100px;height: 100px"
                                     src="<c:url value="${context}/uploads/${product.product_First_Image}"/>">
                                </img>
+                               <input type="file" name="prod_first_image" id="prod_first_image" />
                            </td>
                        </tr>
                    </c:if>
@@ -90,9 +92,7 @@
                            <c:forEach items="${propertyMap}" var="map" varStatus="status">
                            <tr>
                                <td>${map.key}</td>
-                               <td>
-                                   <input type="text" name="${map.key}" value="${map.value}"/>
-                               </td>
+                               <td>${map.value}</td>
                            </c:forEach>
                            </tr>
                        </tr>

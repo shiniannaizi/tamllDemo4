@@ -12,13 +12,27 @@ public class WebUtils {
 
     /**
      * 检查字符串是否为空
-     * @param str
+     * @param str 要检查的字符串
      * @return boolean true表示字符串为空或""
      */
     public static boolean isNull(String str){
         return str == null || "".equals(str.trim());
     }
 
+    /**
+     * 检测字符串不为空
+     * @param str 要检查额字符串
+     * @return boolean true表示字符串不为空或不=""
+     */
+    public static boolean isNotNull(String str){
+        return str!=null && !"".equals(str.trim());
+    }
+
+    /**
+     * MD5加密工具
+     * @param plainText 要加密的字符串
+     * @return 返回加密的字符串
+     */
     public static String md5(String plainText){
         byte[] secretBytes = null;
         try {

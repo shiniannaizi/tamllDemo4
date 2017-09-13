@@ -1,21 +1,32 @@
 package com.tamll.learn.entiy;
 
+/**
+ * 后台管理员实体类
+ */
 public class Admin {
 
+    //后台管理员ID
     private Integer admin_Id;
 
+    //后台管理员登录名
     private String admin_Name;
 
+    //后台管理员登录密码
     private String admin_Password;
 
+    //后台管理员昵称
     private String admin_NickName;
 
+    //后台管理员联系方式
     private String admin_Phone;
 
+    //后台管理员邮箱
     private String admin_Email;
 
+    //后台管理员地址
     private String admin_Address;
 
+    //后台管理员员工编号
     private String admin_Emp_Id;
 
     public Integer getAdmin_Id() {

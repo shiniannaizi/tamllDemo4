@@ -1,7 +1,9 @@
 @charset "utf-8";
+{
+	border: 1px solid #999;
+}
+
 body{
-	margin:0px;
-	padding:0px;
 	font-family: "微软雅黑";
 	font-size: 12px;
 	color:#666666;
@@ -43,26 +45,20 @@ body{
 #prod_content{
 	width:1200px;
 }
-#prod_content .prod_div{
+#prod_content #prod_div{
 	width:222px;
 	height:347px;
 	border: 1px solid #D4D4D4;
 	margin-top:15px;
-	margin-right:19px;
+	margin-right:18px;
 	float:left;
 }
 
-#prod_content .prod_div:nth-child(5),#prod_content .prod_div:nth-child(10),
-#prod_content .prod_div:nth-child(15),#prod_content .prod_div:nth-child(20),
-#prod_content .prod_div:nth-child(25),#prod_content .prod_div:nth-child(30),
-#prod_content .prod_div:nth-child(35),#prod_content .prod_div:nth-child(40),
-#prod_content .prod_div:nth-child(45),#prod_content .prod_div:nth-child(50){
+#prod_content #prod_div:nth-child(5),#prod_content #prod_div:nth-child(10){
 	margin-right:0px;
 }
 
-#prod_content .prod_div img{
-	height: 218px;
-    width: 222px;
+#prod_content #prod_div img{
 	width:100%; 
 }
 #prod_content #prod_name_div{
@@ -107,28 +103,5 @@ body{
 	line-height:32px;
 	border-left: 1px solid #D4D4D4;
 	border-top: 1px solid #D4D4D4;
-}
-
-form{
-	width: 450px;
-	margin: 0 auto;
-}
-h1{
-	width: 300px;/* */
-	color: #990000;
-	margin: 190px auto 30px;
-	text-align: center;
-}
-
-table{
-	margin: 0 auto;
-	border: 1px;
-}
-td{
-	padding-top: 10px;
-	width: 125px;
-}
-.sub_td{
-	text-align: center;
 }
 

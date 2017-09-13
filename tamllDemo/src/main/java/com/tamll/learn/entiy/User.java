@@ -29,6 +29,10 @@ public class User implements Serializable{
     //用户账号状态
     private int state;//0表示未激活,1表示激活
 
+    public List<Recive> getRecives() {
+        return recives;
+    }
+
     //与Recive的多对一
     private List<Recive> recives;
 

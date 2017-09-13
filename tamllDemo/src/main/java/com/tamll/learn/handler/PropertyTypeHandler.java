@@ -18,7 +18,7 @@ import java.sql.SQLException;
 @MappedTypes(Property.class)
 public class PropertyTypeHandler extends BaseTypeHandler<Property>{
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, Property property, JdbcType jdbcType) throws SQLException {
-        preparedStatement.setString(2,String.valueOf(property.getProperty_Id()));
+        preparedStatement.setString(3,String.valueOf(property.getProperty_Id()));
     }
 
     public Property getNullableResult(ResultSet resultSet, String s) throws SQLException {

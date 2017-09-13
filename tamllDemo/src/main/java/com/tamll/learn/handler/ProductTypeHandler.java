@@ -17,7 +17,7 @@ import java.sql.SQLException;
 @MappedTypes(Product.class)
 public class ProductTypeHandler extends BaseTypeHandler<Product>{
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, Product product, JdbcType jdbcType) throws SQLException {
-        preparedStatement.setString(3,String.valueOf(product.getProduct_Id()));
+        preparedStatement.setString(2,String.valueOf(product.getProduct_Id()));
     }
 
     public Product getNullableResult(ResultSet resultSet, String s) throws SQLException {

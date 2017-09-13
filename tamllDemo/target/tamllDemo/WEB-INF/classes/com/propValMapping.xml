@@ -31,12 +31,12 @@
         property_value_id,property_value_value
     </sql>
     <insert id="insert" parameterType="com.tamll.learn.entiy.PropertyValue">
-        INSERT INTO property_value(property_value_value,property_value_property_id,property_value_product_id)
+        INSERT INTO property_value(property_value_value,property_value_product_id,property_value_property_id)
                 VALUES (#{property_Value_Value,jdbcType=VARCHAR},
-                #{property,jdbcType=INTEGER,javaType=com.tamll.learn.entiy.Property,
-                typeHandler=com.tamll.learn.handler.PropertyTypeHandler},
                 #{product,jdbcType=BIGINT,javaType=com.tamll.learn.entiy.Product,
-                typeHandler=com.tamll.learn.handler.ProductTypeHandler})
+                typeHandler=com.tamll.learn.handler.ProductTypeHandler},
+                #{property,jdbcType=INTEGER,javaType=com.tamll.learn.entiy.Property,
+                typeHandler=com.tamll.learn.handler.PropertyTypeHandler})
     </insert>
     <select id="selectPropertyValueByProductId" parameterType="java.lang.Long" resultMap="ValueResultMap">
         SELECT
@@ -68,5 +68,9 @@
         DELETE FROM property_value
         WHERE property_value_product_id=#{productId,jdbcType=BIGINT} AND
               property_value_property_id=#{propertyId,jdbcType=INTEGER}
+    </delete>
+    <delete id="deletePropertyValueByProductId" parameterType="java.lang.Long">
+        DELETE FROM property_value
+        WHERE property_value_product_id=#{productId,jdbcType=BIGINT}
     </delete>
 </mapper>

@@ -32,10 +32,4 @@ public class IDUtils {
         long id = new Long(str);
         return id;
     }
-
-    public static void main(String[] args) {
-        for (int i=0;i<10;i++){
-            System.out.println(getProductId());
-        }
-    }
 }

@@ -30,10 +30,15 @@
         SELECT *
         FROM category
     </select>
-    <select id="selectCategoryById" resultMap="CategoryList" parameterType="java.lang.String">
+    <select id="selectCategoryById" resultMap="CategoryList" parameterType="java.lang.Integer">
         SELECT *
         FROM category
         WHERE category_id = #{category_Id,jdbcType=INTEGER}
+    </select>
+    <select id="selectCategoryByName" resultMap="CategoryList" parameterType="java.lang.String">
+        SELECT *
+        FROM category
+        WHERE category_name=#{category_Name,jdbcType=VARCHAR}
     </select>
     <delete id="delete" parameterType="java.lang.Integer">
         DELETE FROM category

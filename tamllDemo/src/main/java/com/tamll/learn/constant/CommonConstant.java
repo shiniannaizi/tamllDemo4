@@ -18,4 +18,16 @@ public class CommonConstant {
      * 每页的记录数
      */
     public static final int PAGE_SIZE = 3;
+
+    //订单支付---未支付
+    public static final int UN_PAY = 0;
+
+    //订单状态---未发货
+    public static final int UN_DELIVERY = 1;
+
+    //订单状态---未收货
+    public static final int UN_RECIVE = 2;
+
+    //订单状态--完成
+    public static final int FINISH = 3;
 }

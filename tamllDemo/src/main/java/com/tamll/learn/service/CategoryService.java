@@ -28,4 +28,8 @@ public class CategoryService {
     public Category getCategoryById(Integer categoryId){
         return categoryMapping.selectCategoryById(categoryId);
     }
+
+    public Category getCategoryByName(String categoryName){
+        return categoryMapping.selectCategoryByName(categoryName);
+    }
 }

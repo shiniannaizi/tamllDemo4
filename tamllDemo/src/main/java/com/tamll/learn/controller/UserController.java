@@ -12,7 +12,6 @@ import com.tamll.learn.utils.VerifyCode;
 import com.tamll.learn.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -317,9 +316,9 @@ public class UserController {
         //验证成功，注册用户
         userService.insertUser(userName,userSex,userPassword,userAddress,userEmail);
         //向用户邮箱发送激活邮件
-//        SendJMail.sendMail(userEmail,
-//                "请点击去<a href='http://localhost:8080/activecode/?email="
-//                        +userEmail+"'>激活帐号</a>");
+        SendJMail.sendMail(userEmail,
+                "请点击去<a href='http://localhost:8080/activecode/?email="
+                        +userEmail+"'>激活帐号</a>");
         return "forward:/time1.jsp";
     }
 

@@ -47,6 +47,43 @@ public class Product {
     //与图片的多对一
     private List<ProductImage> productImages;
 
+    /**
+     * 重写hashCode方法
+     * @return 返回hashCode值
+     */
+    public int hashCode() {
+        return product_Name==null?0:product_Name.hashCode();
+    }
+
+    /**
+     * 重写equals方法
+     * @param obj 要比较的对象
+     * @return 如果两个对象的hashCode值相同,则返回true,反之则返回false
+     */
+    public boolean equals(Object obj) {
+        //this不为null
+        if(obj==null){
+            return false;
+        }
+        //this和obj在堆内容中的地址相同
+        if(this==obj){//肯定是同一个对象
+            return true;
+        }
+        //obj不为null
+        //判断obj是否为Product类的对象
+        if(!(obj instanceof Product)){
+            //obj不是Product类创建的对象
+            return false;
+        }
+        //obj是Product类的对象
+        Product other = (Product)obj;
+        //判断两个对象的id是否相同
+        if(product_Name!=null&&product_Name.equals(other.getProduct_Name())){
+            return true;
+        }
+        return false;
+    }
+
     public long getProduct_Id() {
         return product_Id;
     }

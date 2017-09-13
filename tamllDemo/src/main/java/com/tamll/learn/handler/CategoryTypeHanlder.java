@@ -18,7 +18,7 @@ import java.sql.SQLException;
 public class CategoryTypeHanlder extends BaseTypeHandler<Category> {
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, Category category,
                                     JdbcType jdbcType) throws SQLException {
-        preparedStatement.setString(11,String.valueOf(category.getCategory_Id()));
+        preparedStatement.setString(2,String.valueOf(category.getCategory_Id()));
     }
 
     public Category getNullableResult(ResultSet resultSet, String s) throws SQLException {

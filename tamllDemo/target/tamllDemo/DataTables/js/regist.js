@@ -127,7 +127,6 @@ function checkEmail() {
         emailspan.innerHTML = "邮箱不能为空".fontsize(2).fontcolor("red");
         return false;
     }
-
 }
 
 /*

@@ -55,7 +55,7 @@
         <tr>
             <td class="sub_td">${product.product_Name}</td>
             <td class="sub_td"><img style="width: 100px;height: 100px"
-                                    src="<c:url value="${context}/uploads/${product.product_First_Image}"/>"></img></td>
+                                    src="<c:url value="${context}/uploads/${product.product_First_Image}"/>"></td>
             <td class="sub_td">${product.product_Orignal_Price}元</td>
             <td class="sub_td">${product.product_Promote_Price}元</td>
             <td class="sub_td">${product.product_Stock}</td>
@@ -66,8 +66,8 @@
             <td class="sub_td" style="width: 200px">${product.product_Subtitle}</td>
             <td class="sub_td" style="width: 200px">
                 <a href="<c:url value="/backend/updateprod/${product.product_Id}"/>" target="rightFrame">修改</a>
-                <a href="<c:url value=""/>" target="rightFrame">删除</a>
-                <a href="<c:url value=""/>">上传图片</a>
+                <a href="<c:url value="/backend/deleteproduct/${product.product_Id}"/>" target="rightFrame">删除</a>
+                <a href="<c:url value="/backend/addprodimage/${product.product_Id}"/>">上传图片</a>
                 <a href="<c:url value="/backend/addproperty/${product.product_Id}"/>" target="rightFrame">设置属性</a>
             </td>
         </tr>

@@ -11,11 +11,22 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 用户自动登录拦截器
+ */
 public class LoginInterceptor implements HandlerInterceptor {
 
     @Autowired
     private UserService userService;
 
+    /**
+     * 拦截处理自动登录的user对象
+     * @param request 请求参数 从session获取登陆的user对象
+     * @param response 响应参数
+     * @param o Object对象
+     * @return 无论是否自动登录都放行
+     * @throws Exception 抛出大异常
+     */
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         if (request.getSession().getAttribute(CommonConstant.USER_CONTEXT) == null){
             if (CookieUtils.getCookieValue(request,"autologin",true)!=null){

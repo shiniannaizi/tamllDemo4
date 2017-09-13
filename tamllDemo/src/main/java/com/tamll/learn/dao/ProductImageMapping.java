@@ -14,5 +14,7 @@ public interface ProductImageMapping {
 
     List<ProductImage> selectProductImageByProductId(long productId);
 
-    int deleteProductImageById(Integer productImageId);
+    void deleteProductImageById(Integer productImageId);
+
+    void deleteProductImageByProductId(long productId);
 }
