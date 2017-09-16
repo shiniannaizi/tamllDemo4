@@ -40,6 +40,14 @@ public class OrderService {
     }
 
     /**
+     * 查询所有的订单并关联其子项对象
+     * @return 返回订单列表
+     */
+    public List<Order> getAllOrder(){
+        return orderMapping.selectAllOrder();
+    }
+
+    /**
      * 通过用户ID获取订单列表
      * @param userId 用户ID
      * @return 返回用户的订单列表

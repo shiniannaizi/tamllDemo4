@@ -24,4 +24,6 @@ public interface OrderMapping {
     void deleteOrderById(Integer orderId);
 
     void deleteOrderByNumber(String orderNumber);
+
+    List<Order> selectAllOrder();
 }

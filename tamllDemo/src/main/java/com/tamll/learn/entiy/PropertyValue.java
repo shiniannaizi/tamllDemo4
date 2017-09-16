@@ -1,10 +1,12 @@
 package com.tamll.learn.entiy;
 
 
+import java.io.Serializable;
+
 /**
  * 商品属性值实体类
  */
-public class PropertyValue {
+public class PropertyValue implements Serializable{
 
     //属性值ID
     private Integer property_Value_Id;

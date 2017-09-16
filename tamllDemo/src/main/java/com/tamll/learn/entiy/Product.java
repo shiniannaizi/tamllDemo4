@@ -1,12 +1,13 @@
 package com.tamll.learn.entiy;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * 商品实体类
  */
-public class Product {
+public class Product implements Serializable {
 
     //商品ID
     private long product_Id;

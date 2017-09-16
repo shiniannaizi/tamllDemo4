@@ -48,6 +48,12 @@
         FROM t_order o
         WHERE o.order_number=#{order_Number,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllOrder" resultMap="BaseResultMap">
+        SELECT
+            o.*,oi.*
+        FROM t_order o
+        LEFT OUTER JOIN orderitem oi ON oi.orderitem_order_number=o.order_number
+    </select>
     <update id="updateOrderByNumber" parameterType="java.lang.String">
         UPDATE t_order
         SET order_pay_date=#{order_Pay_Date,jdbcType=TIMESTAMP},

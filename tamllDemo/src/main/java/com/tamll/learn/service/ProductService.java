@@ -3,7 +3,9 @@ package com.tamll.learn.service;
 import com.tamll.learn.dao.ProductMapping;
 import com.tamll.learn.entiy.Category;
 import com.tamll.learn.entiy.Product;
+import com.tamll.learn.redis.JedisClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,6 +21,14 @@ public class ProductService {
     @Autowired
     @SuppressWarnings("SpringJavaAutowiringInspection")
     private ProductMapping productMapping;
+
+    @Autowired
+    private JedisClient jedisClient;
+
+    @Value("${REDIS_ITEM_KEY}")
+    private String REDIS_ITEM_KEY;
+    @Value("${REDIS_ITEM_EXPIRE}")
+    private Integer REDIS_ITEM_EXPIRE;
 
     /**
      * 插入一条商品记录
@@ -59,7 +69,30 @@ public class ProductService {
      * @return 返回商品对象
      */
     public Product getProductById(long productId){
-        return productMapping.selectProductById(productId);
+        try {
+            //添加缓存逻辑
+            //从缓存中取商品，商品id对应的信息
+            Object o = jedisClient.get(REDIS_ITEM_KEY+":"+productId+":base");
+            if(o!=null) {
+                //把Object对象转化为Product
+                Product product = (Product) o;
+                return product;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Product product = productMapping.selectProductById(productId);
+
+        //把商品信息写入缓存
+        try {
+            jedisClient.set(REDIS_ITEM_KEY+":"+productId+":base", product);
+            //设置key的有效期
+            jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":base", REDIS_ITEM_EXPIRE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return product;
     }
 
     /**
@@ -68,7 +101,30 @@ public class ProductService {
      * @return 返回商品列表
      */
     public List<Product> getAllProduct(Map<String,Object> map){
-        return productMapping.selectAllProduct(map);
+        try {
+            //添加缓存逻辑
+            //从缓存中取商品列表
+            List<Product> list = (List<Product>) jedisClient.getList(REDIS_ITEM_KEY+":productList:base");
+
+            if(list!=null)
+            {
+                return list;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<Product> productList = productMapping.selectAllProduct(map);
+
+        //把商品列表写入缓存
+        try {
+            jedisClient.setList(REDIS_ITEM_KEY+":productList:base", productList);
+            //设置key的有效期
+            jedisClient.expire(REDIS_ITEM_KEY+":productList:base", REDIS_ITEM_EXPIRE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return productList;
     }
 
     /**
@@ -77,7 +133,22 @@ public class ProductService {
      * @return 返回一个商品对象
      */
     public Product getFullProductById(long productId){
-        return productMapping.selectFullProductById(productId);
+        try {
+            if(jedisClient.get(REDIS_ITEM_KEY+":"+productId+":base")!=null) {
+                Product p = (Product) jedisClient.get(REDIS_ITEM_KEY+":"+productId+":base");
+                return p;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Product product = productMapping.selectFullProductById(productId);
+        try {
+            jedisClient.set(REDIS_ITEM_KEY+":"+productId+":base",product);
+            jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":base",REDIS_ITEM_EXPIRE);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return product;
     }
 
     /**
@@ -106,6 +177,12 @@ public class ProductService {
         product.setProduct_Status(prodStatus);
         product.setProduct_First_Image(prodFI);
         product.setCategory(category);
+        try {
+            jedisClient.set(REDIS_ITEM_KEY+":"+productId+":base",product);
+            jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":base",REDIS_ITEM_EXPIRE);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         productMapping.updateProductById(product);
     }
 
@@ -132,6 +209,12 @@ public class ProductService {
         product.setProduct_Subtitle(prodSubTitle);
         product.setProduct_Status(prodStatus);
         product.setCategory(category);
+        try {
+            jedisClient.set(REDIS_ITEM_KEY+":"+productId+":base",product);
+            jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":base",REDIS_ITEM_EXPIRE);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         productMapping.updateProductById(product);
     }
 
@@ -140,6 +223,12 @@ public class ProductService {
      * @param product 商品对象
      */
     public void updateProductStock(Product product){
+        try {
+            jedisClient.set(REDIS_ITEM_KEY+":"+product.getProduct_Id()+":base",product);
+            jedisClient.expire(REDIS_ITEM_KEY+":"+product.getProduct_Id()+":base",REDIS_ITEM_EXPIRE);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         productMapping.updateProductStockById(product);
     }
 
@@ -148,6 +237,11 @@ public class ProductService {
      * @param productId 商品ID
      */
     public void deleteProductById(long productId){
+        try {
+            jedisClient.del(REDIS_ITEM_KEY+":"+productId+":base");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         productMapping.deleteProductById(productId);
     }
 }

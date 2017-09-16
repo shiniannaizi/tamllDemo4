@@ -20,7 +20,7 @@
     <bean id="propertyConfigure" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath:jdbc.properties</value>
+                <value>classpath:/*.properties</value>
             </list>
         </property>
     </bean>
@@ -47,6 +47,29 @@
         <property name="timeBetweenEvictionRunsMillis" value="20000"/>
         <property name="numTestsPerEvictionRun" value="100"/>
     </bean>
+    <!-- 连接配置 -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="30" />
+        <property name="maxIdle" value="10" />
+        <property name="numTestsPerEvictionRun" value="1024"/>
+        <property name="timeBetweenEvictionRunsMillis" value="30000" />
+        <property name="minEvictableIdleTimeMillis" value="-1" />
+        <property name="softMinEvictableIdleTimeMillis" value="10000" />
+        <property name="maxWaitMillis" value="1500"/>
+        <property name="testOnBorrow" value="true" />
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="jmxEnabled" value="true"/>
+        <property name="jmxNamePrefix" value="youyuan"/>
+        <property name="blockWhenExhausted" value="false"/>
+    </bean>
+    <!-- jedis 配置 -->
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="host" value="${host}"/>
+        <constructor-arg name="port" value="${port}"/>
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+    </bean>
+    <bean id="jedisClientSingle" class="com.tamll.learn.redis.JedisClientSingle"/>
     <!-- ==========事务相关控制=======  -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: 肖松
@@ -22,8 +23,9 @@
         </dt>
         <dd>
             订单编号：${order.order_Number}<br />
-            下单时间：${order.order_Create_Date}<br />
-            订单金额：${order.order_Total}<br />
+            下单时间：<fmt:formatDate value="${order.order_Create_Date}"
+                                 type="both" dateStyle="medium" timeStyle="medium"/><br />
+            订单金额：${order.order_Total}元<br />
             支付状态：
             <c:if test="${order.order_Status==0 }">
                 <font color="red">未支付</font>&nbsp;&nbsp;&nbsp;

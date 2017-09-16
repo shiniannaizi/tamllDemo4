@@ -1,11 +1,12 @@
 package com.tamll.learn.entiy;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 商品分类实体类
  */
-public class Category {
+public class Category implements Serializable {
 
     //分类ID
     private int category_Id;

@@ -6,9 +6,17 @@ import com.tamll.learn.service.OrderItemService;
 import com.tamll.learn.service.OrderService;
 import com.tamll.learn.service.ProductService;
 import com.tamll.learn.service.ReciveService;
+import com.tamll.learn.utils.MapUtils;
 import com.tamll.learn.utils.PaymentUtils;
 import com.tamll.learn.utils.PropUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.io.*;
+import java.util.*;
 
 /**
  * 订单控制层
@@ -73,6 +78,7 @@ public class OrderController {
             money += entry.getKey().getProduct_Orignal_Price()*entry.getValue();
             number += entry.getValue();
         }
+        request.getSession().removeAttribute("cart");
         orderService.insertOrder(order.getOrder_Number(),new Date(),money,
                 number,CommonConstant.UN_PAY,reciveInfo);
         return "redirect:/myorderlist";
@@ -259,5 +265,90 @@ public class OrderController {
             //将来可以转发到数据被篡改的页面
         }
         return "myorderlist";
+    }
+
+    /**
+     * 打开销售榜单页面
+     * @param request 请求参数 向前台发送销售榜单
+     * @return 转向销售榜单页面
+     */
+    @RequestMapping(value = "/backend/salelist")
+    public String saleList(HttpServletRequest request){
+        List<Order> orders = orderService.getAllOrder();
+        List<OrderItem> orderItems = new ArrayList<OrderItem>();
+        for (Order order:orders) {
+            List<OrderItem> list = orderItemService.getOrderItemListByOrderNumber(order.getOrder_Number());
+            orderItems.addAll(list);
+        }
+        Map<Product,Integer> map = new HashMap<Product, Integer>();
+        for (OrderItem orderItem:orderItems){
+            Product product = orderItem.getProduct();
+            if (map.get(product)!=null){
+                map.put(product,map.get(product)+orderItem.getOrderItem_Product_Number());
+            }else {
+                map.put(product,orderItem.getOrderItem_Product_Number());
+            }
+        }
+        map = MapUtils.sortByValue(map);
+        request.getSession().setAttribute("salemap",map);
+        request.setAttribute("map",map);
+        return "sale_list";
+    }
+
+    /**
+     * 销售榜单下载
+     * @param request 请求参数 从session域中获取销售榜单
+     * @return 返回下载文件
+     * @throws IOException 抛出读写异常
+     */
+    @RequestMapping(value = "/backend/downsalelist")
+    public ResponseEntity<byte[]> saleListDownLoad(HttpServletRequest request) throws IOException {
+        final Map<Product,Integer> map = (Map<Product, Integer>) request.getSession().getAttribute("salemap");
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                Workbook wb = new XSSFWorkbook();
+                try {
+                    FileOutputStream fos = new FileOutputStream("E:\\Ideaprojects\\tamllDemo\\workbook.xlsx");
+                    CreationHelper createHelper = wb.getCreationHelper();
+                    Sheet sheet1 = wb.createSheet("SaleList");
+                    Row row = null;
+                    row = sheet1.createRow(0);
+                    row.createCell(0).setCellValue("商品ID");
+                    row.createCell(1).setCellValue("商品名称");
+                    row.createCell(2).setCellValue("销售数量");
+                    row.createCell(3).setCellValue("时间");
+                    CellStyle cellStyle = wb.createCellStyle();
+                    cellStyle.setDataFormat(
+                            createHelper.createDataFormat().getFormat("m/d/yy h:mm"));
+                    cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+                    cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                    cellStyle.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+                    cellStyle.setFillPattern(CellStyle.BIG_SPOTS);
+                    int i = 0;
+                    for (Map.Entry<Product,Integer> entry:map.entrySet()){
+                        row = sheet1.createRow(i+1);
+                        row.createCell(0).setCellValue(entry.getKey().getProduct_Id());
+                        row.createCell(1).setCellValue(entry.getKey().getProduct_Name());
+                        row.createCell(2).setCellValue(entry.getValue());
+                        Cell cell = row.createCell(3);
+                        cell.setCellValue(new Date());
+                        cell.setCellStyle(cellStyle);
+                        i++;
+                    }
+                    wb.write(fos);
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.start();
+        File file = new File("E:\\Ideaprojects\\tamllDemo\\workbook.xlsx");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("attachment","salelist.xlsx");
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.OK);
     }
 }

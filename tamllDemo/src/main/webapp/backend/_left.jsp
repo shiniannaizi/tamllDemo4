@@ -6,6 +6,9 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String path = request.getContextPath();
+%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -83,11 +86,7 @@
             <li><a>asdsad</a></li>
         </ul>
     </div>
-    <div><a href="javascript:void(0)" onclick="openDiv(this)">> 销售榜单</a>
-        <ul>
-            <li><a>asdsad</a></li>
-            <li><a>asdsad</a></li>
-        </ul>
+    <div><a href="${path}/backend/salelist" target="rightFrame" onclick="openDiv(this)">> 销售榜单</a>
     </div>
 </div>
 </body>

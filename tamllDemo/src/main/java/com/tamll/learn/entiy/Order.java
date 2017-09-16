@@ -1,12 +1,13 @@
 package com.tamll.learn.entiy;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * 订单实体类
  */
-public class Order {
+public class Order implements Serializable {
 
     //订单ID
     private int order_Id;
