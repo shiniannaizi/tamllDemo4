@@ -351,4 +351,15 @@ public class OrderController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/backend/orderlist")
+    public String backOrderList(HttpServletRequest request){
+        List<Order> orders = orderService.getAllOrder();
+        for (Order order:orders) {
+            List<OrderItem> orderItems = orderItemService.getOrderItemListByOrderNumber(order.getOrder_Number());
+            order.setOrderItems(orderItems);
+        }
+        request.setAttribute("orderlist",orders);
+        return "back/order/orderlist";
+    }
 }

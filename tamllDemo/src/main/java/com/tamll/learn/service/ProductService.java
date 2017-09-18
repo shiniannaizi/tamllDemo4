@@ -75,8 +75,7 @@ public class ProductService {
             Object o = jedisClient.get(REDIS_ITEM_KEY+":"+productId+":base");
             if(o!=null) {
                 //把Object对象转化为Product
-                Product product = (Product) o;
-                return product;
+                return (Product) o;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,17 +133,16 @@ public class ProductService {
      */
     public Product getFullProductById(long productId){
         try {
-            if(jedisClient.get(REDIS_ITEM_KEY+":"+productId+":base")!=null) {
-                Product p = (Product) jedisClient.get(REDIS_ITEM_KEY+":"+productId+":base");
-                return p;
+            if(jedisClient.get(REDIS_ITEM_KEY+":"+productId+":full")!=null) {
+                return (Product) jedisClient.get(REDIS_ITEM_KEY+":"+productId+":full");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         Product product = productMapping.selectFullProductById(productId);
         try {
-            jedisClient.set(REDIS_ITEM_KEY+":"+productId+":base",product);
-            jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":base",REDIS_ITEM_EXPIRE);
+            jedisClient.set(REDIS_ITEM_KEY+":"+productId+":full",product);
+            jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":full",REDIS_ITEM_EXPIRE);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -180,6 +178,8 @@ public class ProductService {
         try {
             jedisClient.set(REDIS_ITEM_KEY+":"+productId+":base",product);
             jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":base",REDIS_ITEM_EXPIRE);
+            jedisClient.set(REDIS_ITEM_KEY+":"+productId+":full",product);
+            jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":full",REDIS_ITEM_EXPIRE);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -212,6 +212,8 @@ public class ProductService {
         try {
             jedisClient.set(REDIS_ITEM_KEY+":"+productId+":base",product);
             jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":base",REDIS_ITEM_EXPIRE);
+            jedisClient.set(REDIS_ITEM_KEY+":"+productId+":full",product);
+            jedisClient.expire(REDIS_ITEM_KEY+":"+productId+":full",REDIS_ITEM_EXPIRE);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -226,6 +228,8 @@ public class ProductService {
         try {
             jedisClient.set(REDIS_ITEM_KEY+":"+product.getProduct_Id()+":base",product);
             jedisClient.expire(REDIS_ITEM_KEY+":"+product.getProduct_Id()+":base",REDIS_ITEM_EXPIRE);
+            jedisClient.set(REDIS_ITEM_KEY+":"+product.getProduct_Id()+":full",product);
+            jedisClient.expire(REDIS_ITEM_KEY+":"+product.getProduct_Id()+":full",REDIS_ITEM_EXPIRE);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -239,6 +243,7 @@ public class ProductService {
     public void deleteProductById(long productId){
         try {
             jedisClient.del(REDIS_ITEM_KEY+":"+productId+":base");
+            jedisClient.del(REDIS_ITEM_KEY+":"+productId+":full");
         } catch (Exception e){
             e.printStackTrace();
         }

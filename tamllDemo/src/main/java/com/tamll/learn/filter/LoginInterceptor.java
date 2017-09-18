@@ -4,6 +4,9 @@ import com.tamll.learn.constant.CommonConstant;
 import com.tamll.learn.entiy.User;
 import com.tamll.learn.service.UserService;
 import com.tamll.learn.utils.CookieUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -44,6 +47,10 @@ public class LoginInterceptor implements HandlerInterceptor {
                     throw new RuntimeException("没有这个用户");
                 }
                 if (user!=null){
+                    Subject subject = SecurityUtils.getSubject();
+                    UsernamePasswordToken token = new UsernamePasswordToken(user.getUser_Name(),
+                            user.getUser_Password());
+                    subject.login(token);
                     request.getSession().setAttribute(CommonConstant.USER_CONTEXT,user);
                 }
             }

@@ -14,6 +14,7 @@
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+    <title>商品列表</title>
     <link href="<%=request.getContextPath()%>/DataTables/css/prodList.css" rel="stylesheet" type="text/css">
 </head>
 <body>

@@ -10,6 +10,9 @@ import com.tamll.learn.utils.CookieUtils;
 import com.tamll.learn.utils.SendJMail;
 import com.tamll.learn.utils.VerifyCode;
 import com.tamll.learn.utils.WebUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,8 +92,6 @@ public class UserController {
             return "forward:/login.jsp";
         }
         if(userPassword.equals(userService.getUserByName(userName).getUser_Password())){
-            request.getSession().setAttribute(CommonConstant.USER_CONTEXT,
-                    userService.getUserByName(userName));
             if ("true".equals(request.getParameter("remname"))){
                 CookieUtils.setCookie(request,response,"remname",userName,
                         3600*24*30,true);
@@ -102,6 +103,11 @@ public class UserController {
             }else {
                 CookieUtils.deleteCookie(request,response,"autologin");
             }
+            Subject subject = SecurityUtils.getSubject();
+            UsernamePasswordToken token = new UsernamePasswordToken(userName,userPassword);
+            subject.login(token);
+            request.getSession().setAttribute(CommonConstant.USER_CONTEXT,
+                    userService.getUserByName(userName));
             return "redirect:"+request.getContextPath()+"/index.jsp";
         }else {
             request.setAttribute("errMsg", "用户名或密码错误");

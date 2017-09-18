@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -420,6 +417,47 @@ public class ProductController {
         product1.setProduct_Name(product.getProduct_Name());
         cart.put(product1,prodNum);
         return "cart";
+    }
+
+    @RequestMapping(value = "/updatecart/{prodId}/{buyNum}")
+    public String updateCart(@PathVariable Long prodId,
+                             @PathVariable Integer buyNum,
+                             HttpServletRequest request){
+        Product prod = productService.getProductById(prodId);
+        Object cartObject = request.getSession().getAttribute("cart");
+        Map<Product,Integer> cart = null;
+        if (cartObject!=null){
+            cart = (Map<Product, Integer>) cartObject;
+        }else {
+            cart = new HashMap<Product, Integer>();
+            request.getSession().setAttribute("cart",cart);
+        }
+        if(buyNum < 0){
+            cart.remove(prod);
+        }else{
+            cart.put(prod, cart.containsKey(prod) ?
+                    cart.get(prod) + buyNum : buyNum);
+        }
+        return "cart";
+    }
+
+    @RequestMapping(value = "/checkprodstock/{prodId}/{buyNum}",method = RequestMethod.GET)
+    public void checkProductStock(@PathVariable Long prodId,
+                                  @PathVariable Integer buyNum,
+                                  HttpServletResponse response){
+        if (buyNum >= productService.getProductById(prodId).getProduct_Stock()){
+            try {
+                response.getWriter().write("false");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+            try {
+                response.getWriter().write("true");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

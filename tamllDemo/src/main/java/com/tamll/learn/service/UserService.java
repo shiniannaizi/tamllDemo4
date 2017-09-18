@@ -5,6 +5,8 @@ import com.tamll.learn.entiy.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 /**
  * User服务层
  */
@@ -106,5 +108,9 @@ public class UserService {
 
     public User getFullUserById(Integer userId){
         return userMapping.selectRecivesByUserId(userId);
+    }
+
+    public Set<String> getRoleByName(String userName){
+        return userMapping.selectRoleByName(userName);
     }
 }

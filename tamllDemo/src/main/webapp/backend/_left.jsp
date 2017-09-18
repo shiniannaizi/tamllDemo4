@@ -51,7 +51,7 @@
             display: none;
         }
     </style>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/DataTables/js/jquery-1.4.2.js">
+    <script type="text/javascript" src="${path}/DataTables/js/jquery-1.4.2.js">
     </script>
     <script type="text/javascript">
         function openDiv(thisobj){
@@ -64,8 +64,8 @@
 <div id="menu_bar">
     <div><a href="javascript:void(0)" onclick="openDiv(this)">> 商品管理</a>
         <ul>
-            <li><a href="<%=request.getContextPath()%>/backend/addProd" target="rightFrame">商品添加</a></li>
-            <li><a href="<%=request.getContextPath()%>/backend/prodlist" target="rightFrame">商品列表</a></li>
+            <li><a href="${path}/backend/addProd" target="rightFrame">商品添加</a></li>
+            <li><a href="${path}/backend/prodlist" target="rightFrame">商品列表</a></li>
         </ul>
     </div>
     <div><a href="javascript:void(0)" onclick="openDiv(this)">> 用户管理</a>
@@ -82,7 +82,7 @@
     </div>
     <div><a href="javascript:void(0)" onclick="openDiv(this)">> 订单管理</a>
         <ul>
-            <li><a>asdsad</a></li>
+            <li><a href="${path}/backend/orderlist" target="rightFrame">全部订单</a></li>
             <li><a>asdsad</a></li>
         </ul>
     </div>

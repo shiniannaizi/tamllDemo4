@@ -26,6 +26,9 @@ public class User implements Serializable{
     //用户邮箱
     private String user_Email;
 
+    //用户权限
+    private String user_Role;
+
     //用户账号状态
     private int state;//0表示未激活,1表示激活
 
@@ -106,6 +109,14 @@ public class User implements Serializable{
 
     public void setUser_Email(String user_Email) {
         this.user_Email = user_Email;
+    }
+
+    public String getUser_Role() {
+        return user_Role;
+    }
+
+    public void setUser_Role(String user_Role) {
+        this.user_Role = user_Role;
     }
 
 }

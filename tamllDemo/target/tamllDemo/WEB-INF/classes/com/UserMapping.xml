@@ -9,6 +9,7 @@
         <result column="user_address" property="user_Address" jdbcType="VARCHAR" />
         <result column="user_email" property="user_Email" jdbcType="VARCHAR" />
         <result column="state" property="state" jdbcType="INTEGER" />
+        <result column="user_role" property="user_Role" jdbcType="VARCHAR"/>
         
         <collection property="recives" ofType="com.tamll.learn.entiy.Recive">
             <id column="user_recive_id" property="user_Recive_Id" jdbcType="INTEGER"/>
@@ -41,6 +42,11 @@
         <include refid="Base_Column_List"/>
         FROM user
         WHERE user_email = #{user_Email,jdbcType=VARCHAR}
+    </select>
+    <select id="selectRoleByName" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT user_role
+        FROM user
+        WHERE user_name = #{user_Name,jdbcType=VARCHAR}
     </select>
     <select id="selectRecivesByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         SELECT

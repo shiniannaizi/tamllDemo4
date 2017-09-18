@@ -16,6 +16,7 @@
             <result column="user_address" property="user_Address" jdbcType="VARCHAR" />
             <result column="user_email" property="user_Email" jdbcType="VARCHAR" />
             <result column="state" property="state" jdbcType="INTEGER" />
+            <result column="user_role" property="user_Role" jdbcType="VARCHAR"/>
         </association>
     </resultMap>
     <resultMap id="ReciveList" type="com.tamll.learn.entiy.Recive" >

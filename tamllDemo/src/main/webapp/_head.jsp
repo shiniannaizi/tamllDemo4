@@ -1,11 +1,12 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 <!DOCTYPE HTML>
-<link rel="stylesheet" href="<%=request.getContextPath() %>/DataTables/css/head.css"/>
+<link rel="stylesheet" href="${path}/DataTables/css/head.css"/>
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
 
 <div id="common_head">
@@ -13,7 +14,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div id="content1">
 			<c:if test="${!empty USER_CONTEXT.user_Name}">
 				<a href="<%=basePath %>/userinfo/${USER_CONTEXT.user_Id}">${USER_CONTEXT.user_Name}</a>
-                ,&nbsp;&nbsp;欢迎您的到来,
+                ,&nbsp;&nbsp;欢迎您的到来,<shiro:hasRole name="admin">管理员</shiro:hasRole>
 				<a href="<c:url value="/doLogout"/>">&nbsp;&nbsp;退出</a>
 			</c:if>
             <c:if test="${empty USER_CONTEXT.user_Name}">
