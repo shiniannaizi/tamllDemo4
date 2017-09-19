@@ -26,7 +26,8 @@ public class MyRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)
+            throws AuthenticationException {
         String userName = (String) authenticationToken.getPrincipal();
         User user = userService.getUserByName(userName);
         if (user!=null){

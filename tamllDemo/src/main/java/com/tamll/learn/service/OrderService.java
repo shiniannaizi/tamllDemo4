@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单服务层
@@ -79,5 +80,13 @@ public class OrderService {
      */
     public void updateOrderByNumber(Order order){
         orderMapping.updateOrderByNumber(order);
+    }
+
+    public List<Order> getOrderListByStatus(Integer status){
+        return orderMapping.selectNoFinOrder(status);
+    }
+
+    public List<Order> getPageOrderList(Map<String,Object> map){
+        return orderMapping.selectPageOrder(map);
     }
 }

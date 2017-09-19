@@ -3,6 +3,7 @@ package com.tamll.learn.dao;
 import com.tamll.learn.entiy.Order;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单数据库接口
@@ -26,4 +27,8 @@ public interface OrderMapping {
     void deleteOrderByNumber(String orderNumber);
 
     List<Order> selectAllOrder();
+
+    List<Order> selectNoFinOrder(Integer status);
+
+    List<Order> selectPageOrder(Map<String,Object> map);
 }

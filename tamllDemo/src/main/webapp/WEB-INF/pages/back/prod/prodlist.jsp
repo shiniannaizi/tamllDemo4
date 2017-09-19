@@ -30,7 +30,7 @@
         })
     </script>
 </head>
-<body STYLE="background-image: none;font-size: 15px;margin-top: -160px">
+<body STYLE="background-image: none;font-size: 15px;margin-left: 220px;">
 <h1>商品列表</h1>
 <table border="1px">
     <input type="hidden" id="err" value="<%= request.getAttribute("errMsg")%>" />

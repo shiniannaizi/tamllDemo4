@@ -18,8 +18,15 @@
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
     <link href="${context}/DataTables/css/orderList.css" rel="stylesheet" type="text/css">
 </head>
-<body STYLE="background-image: none;font-size: 15px;margin-top: -160px">
+<body STYLE="background-image: none;font-size: 15px;margin-left: 220px">
 <h1>订单列表</h1>
+<a href="<c:url value="/backend/pageorderlist/${0}"/>">分页查询</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/pageorderlist/${-3}"/>">上一页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/pageorderlist/${3}"/>">下一页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/orderliststatus/${0}"/>">未支付</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/orderliststatus/${1}"/>">未发货</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/orderliststatus/${2}"/>">未收货</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/orderliststatus/${3}"/>">已完成</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <c:forEach items="${orderlist }" var="order">
     <dl class="Order_information">
         <dt>
@@ -30,15 +37,15 @@
             下单时间：<fmt:formatDate value="${order.order_Create_Date}"
                                  type="both" dateStyle="medium" timeStyle="medium"/><br />
             订单金额：${order.order_Total}元<br />
-            订单状态：
+            <div>订单状态：
             <c:if test="${order.order_Status==0 }">
                 <font color="red">未支付</font><br />
             </c:if>
             <c:if test="${order.order_Status==1 }">
-                <font color="blue">已支付</font>
+                <font color="blue">已支付</font>&nbsp;&nbsp;&nbsp;
                 支付时间：<fmt:formatDate value="${order.order_Pay_Date}"
-                                     type="both" dateStyle="medium" timeStyle="medium"/>
-                发货<br />
+                                     type="both" dateStyle="medium" timeStyle="medium"/>&nbsp;&nbsp;&nbsp;
+                <a href="<c:url value="/backend/updateorderlist/${order.order_Number}/${2}"/>">发货</a><br />
             </c:if>
             <c:if test="${order.order_Status==2 }">
                 <font color="blue">已发货</font>
@@ -52,6 +59,7 @@
                                      type="both" dateStyle="medium" timeStyle="medium"/>
                 删除<br />
             </c:if>
+            </div>
             收货地址：${order.order_Recive_Info}<br/>
         </dd>
     </dl>

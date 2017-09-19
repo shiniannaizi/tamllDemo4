@@ -1,5 +1,6 @@
 package com.tamll.learn.controller;
 
+import com.tamll.learn.constant.CommonConstant;
 import com.tamll.learn.service.AdminService;
 import com.tamll.learn.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ public class AdminController {
             return "/adminlogin";
         }
         if (password.equals(adminService.getAdminByName(adminname).getAdmin_Password())){
+            request.getSession().setAttribute(CommonConstant.ADMIN_CONTEXT,
+                    adminService.getAdminByName(adminname));
             return "forward:/backend/manage.jsp";
         }else {
             request.setAttribute("errMsg","用户名密码错误");

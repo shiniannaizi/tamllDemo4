@@ -54,6 +54,19 @@
         FROM t_order o
         LEFT OUTER JOIN orderitem oi ON oi.orderitem_order_number=o.order_number
     </select>
+    <select id="selectNoFinOrder" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+            o.*,oi.*
+        FROM t_order o
+        LEFT OUTER JOIN orderitem oi ON oi.orderitem_order_number=o.order_number
+        WHERE o.order_status=#{order_Status,jdbcType=INTEGER}
+    </select>
+    <select id="selectPageOrder" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+            o.*
+        FROM (SELECT * FROM t_order LIMIT #{beginrow,jdbcType=INTEGER},#{pagesize,jdbcType=INTEGER}) o
+        LEFT OUTER JOIN orderitem oi ON oi.orderitem_order_number=o.order_number
+    </select>
     <update id="updateOrderByNumber" parameterType="java.lang.String">
         UPDATE t_order
         SET order_pay_date=#{order_Pay_Date,jdbcType=TIMESTAMP},

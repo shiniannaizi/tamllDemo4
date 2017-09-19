@@ -2,16 +2,14 @@ package com.tamll.learn.controller;
 
 import com.tamll.learn.constant.CommonConstant;
 import com.tamll.learn.entiy.*;
-import com.tamll.learn.service.OrderItemService;
-import com.tamll.learn.service.OrderService;
-import com.tamll.learn.service.ProductService;
-import com.tamll.learn.service.ReciveService;
+import com.tamll.learn.service.*;
 import com.tamll.learn.utils.MapUtils;
 import com.tamll.learn.utils.PaymentUtils;
 import com.tamll.learn.utils.PropUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -358,6 +356,49 @@ public class OrderController {
         for (Order order:orders) {
             List<OrderItem> orderItems = orderItemService.getOrderItemListByOrderNumber(order.getOrder_Number());
             order.setOrderItems(orderItems);
+        }
+        request.setAttribute("orderlist",orders);
+        return "back/order/orderlist";
+    }
+
+    @RequestMapping(value = "/backend/orderliststatus/{status}")
+    public String backOrderListStatus(@PathVariable Integer status,
+                                      HttpServletRequest request){
+        List<Order> orders = orderService.getOrderListByStatus(status);
+        for (Order order:orders){
+            order.setOrderItems(orderItemService.getOrderItemListByOrderNumber(order.getOrder_Number()));
+        }
+        request.setAttribute("orderlist",orders);
+        return "back/order/orderlist";
+    }
+
+    @RequestMapping(value = "/backend/updateorderlist/{orderNumber}/{status}")
+    public String updateOrderList(@PathVariable String orderNumber,
+                                  @PathVariable Integer status,
+                                  HttpServletRequest request){
+        Order order = orderService.getOrderByNumber(orderNumber);
+        Admin admin = (Admin) request.getSession().getAttribute(CommonConstant.ADMIN_CONTEXT);
+        order.setOrder_Post_Name(admin.getAdmin_Name());
+        order.setOrder_Delivery_Date(new Date());
+        order.setOrder_Post_Address(admin.getAdmin_Address());
+        order.setOrder_Status(status);
+        orderService.updateOrderByNumber(order);
+        return "redirect:/backend/orderlist";
+    }
+
+    @RequestMapping(value = "/backend/pageorderlist/{beginrow}")
+    public String pagingOrderList(@PathVariable Integer beginrow,
+                                  HttpServletRequest request){
+        Map<String,Object> map = new LinkedHashMap<String, Object>();
+        CommonConstant.beginRow += beginrow;
+        if (CommonConstant.beginRow<=0){
+            CommonConstant.beginRow=0;
+        }
+        map.put("beginrow",CommonConstant.beginRow);
+        map.put("pagesize",CommonConstant.PAGE_SIZE);
+        List<Order> orders = orderService.getPageOrderList(map);
+        for (Order order:orders){
+            order.setOrderItems(orderItemService.getOrderItemListByOrderNumber(order.getOrder_Number()));
         }
         request.setAttribute("orderlist",orders);
         return "back/order/orderlist";
