@@ -67,6 +67,13 @@
         FROM (SELECT * FROM t_order LIMIT #{beginrow,jdbcType=INTEGER},#{pagesize,jdbcType=INTEGER}) o
         LEFT OUTER JOIN orderitem oi ON oi.orderitem_order_number=o.order_number
     </select>
+    <select id="selectDateOrderList" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+            o.*
+        FROM t_order o
+        WHERE
+            <![CDATA[ DATE_SUB(CURDATE(), INTERVAL #{datesize,jdbcType=INTEGER} DAY) <= date(o.order_create_date)]]>
+    </select>
     <update id="updateOrderByNumber" parameterType="java.lang.String">
         UPDATE t_order
         SET order_pay_date=#{order_Pay_Date,jdbcType=TIMESTAMP},

@@ -1,14 +1,15 @@
 package com.tamll.learn.redis;
 
-import com.tamll.learn.entiy.Product;
 import com.tamll.learn.utils.SerializeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.List;
 
+/**
+ * 单机版redis操作实例类
+ */
 public class JedisClientSingle implements JedisClient{
 
     @Autowired

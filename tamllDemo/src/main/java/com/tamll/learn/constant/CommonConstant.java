@@ -14,6 +14,7 @@ public class CommonConstant {
      */
     public static final String ADMIN_CONTEXT = "ADMIN_CONTEXT";
 
+    //分页查询起始行
     public static Integer beginRow = 0;
 
     /**
@@ -32,4 +33,7 @@ public class CommonConstant {
 
     //订单状态--完成
     public static final int FINISH = 3;
+
+    //订单状态--申请退款
+    public static final int RETURN = 4;
 }

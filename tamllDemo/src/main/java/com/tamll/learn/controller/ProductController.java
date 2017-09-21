@@ -6,6 +6,7 @@ import com.tamll.learn.service.*;
 import com.tamll.learn.utils.IDUtils;
 import com.tamll.learn.utils.UploadImageUtils;
 import com.tamll.learn.utils.WebUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,9 @@ public class ProductController {
 
     @Autowired
     private UserService userService;
+
+    private Logger logger = Logger.getLogger(this.getClass());;
+
     /**
      * 打开商品添加页面
      * @param request 请求参数，向页面返回分类列表
@@ -87,19 +91,17 @@ public class ProductController {
                                  @RequestParam("prod_subtitle") String product_Subtitle,
                                  MultipartHttpServletRequest request){
         long product_Id = IDUtils.getProductId();
-        Integer product_Status = 0;
-        Date product_Update_Date = new Date();
-        Category category = categoryService.getCategoryById(Integer.parseInt(product_Category));
         List<MultipartFile> files = request.getFiles("prod_first_image");
         String product_First_Image = null;
         try {
             product_First_Image = UploadImageUtils.uploadImage(files);
         } catch (IOException e) {
+            logger.info("图片上传接口,上传异常,异常信息:"+e);
             e.printStackTrace();
         }
         productService.insertProduct(product_Id,product_Name,product_Orign_Price,product_Promote_Price,
-                product_Stock,product_Create_Date,product_Update_Date,product_Subtitle,product_First_Image,
-                category,product_Status);
+                product_Stock,product_Create_Date,new Date(),product_Subtitle,product_First_Image,
+                categoryService.getCategoryById(Integer.parseInt(product_Category)),0);
         return "redirect:/backend/updateprod/"+product_Id;
     }
 
@@ -166,22 +168,23 @@ public class ProductController {
                                     @RequestParam("prod_subtitle") String prodSubtitle,
                                     @RequestParam("prod_category") String prodCategory,
                                     MultipartHttpServletRequest request){
-        Category category = categoryService.getCategoryById(Integer.parseInt(prodCategory));
-        Date updateDate = new Date();
         String imgurl = null;
         List<MultipartFile> files = request.getFiles("prod_first_image");
         if (WebUtils.isNull(files.get(0).getOriginalFilename())){
             productService.updateProductById(prodId,prodName,prodOP,prodPP,
-                    prodStock,updateDate,prodSubtitle,0,category);
+                    prodStock,new Date(),prodSubtitle,0,
+                    categoryService.getCategoryById(Integer.parseInt(prodCategory)));
             return "redirect:/backend/updateprod/"+prodId;
         } else {
             try {
                 imgurl = UploadImageUtils.uploadImage(files);
-                productService.updateProductById(prodId,prodName,prodOP,prodPP,
-                        prodStock,updateDate,prodSubtitle,imgurl,0,category);
             } catch (IOException e) {
+                logger.info("图片上传接口,上传异常,异常信息:"+e);
                 e.printStackTrace();
             }
+            productService.updateProductById(prodId,prodName,prodOP,prodPP,
+                    prodStock,new Date(),prodSubtitle,imgurl,0,
+                    categoryService.getCategoryById(Integer.parseInt(prodCategory)));
             return "redirect:/backend/updateprod/"+prodId;
         }
     }
@@ -251,13 +254,18 @@ public class ProductController {
         }else {
             try {
                 imgurl = UploadImageUtils.uploadImage(files);
-                request.setAttribute("fileUrlList",imgurl);
-                response.getWriter().write("true");
-                Long prodId = (Long) multiRequest.getSession().getAttribute("prodId");
-                prodImageService.addProductImages(imgurl,prodId);
             } catch (IOException e) {
+                logger.info("图片上传接口,上传异常,异常信息:"+e);
                 e.printStackTrace();
             }
+            request.setAttribute("fileUrlList",imgurl);
+            try {
+                response.getWriter().write("true");
+            } catch (IOException e) {
+                logger.info("response获取输出流接口,IO异常,异常信息:"+e);
+                e.printStackTrace();
+            }
+            prodImageService.addProductImages(imgurl,(Long) multiRequest.getSession().getAttribute("prodId"));
         }
     }
 
@@ -280,15 +288,11 @@ public class ProductController {
     /**
      * 删除商品(删除商品的同时与商品关联的图片,属性也一起删除)
      * @param prodId 商品ID
-     * @param request 请求参数
      * @return 转向商品列表页面
      */
     @RequestMapping(value = "/backend/deleteproduct/{prodId}")
-    public String deleteProduct(@PathVariable Long prodId,
-                                HttpServletRequest request){
+    public String deleteProduct(@PathVariable Long prodId){
         productService.deleteProductById(prodId);
-        prodImageService.deleteProductImageByProductId(prodId);
-        propertyValueService.deletePropertyValueByProductId(prodId);
         return "redirect:/backend/prodlist";
     }
 
@@ -356,7 +360,7 @@ public class ProductController {
                           HttpServletRequest request){
         Product product = productService.getProductById(prodId);
         Object cartObject = request.getSession().getAttribute("cart");
-        Map<Product,Integer> cart = null;
+        Map<Product,Integer> cart;
         if (cartObject!=null){
             cart = (Map<Product, Integer>) cartObject;
         }else {
@@ -419,13 +423,20 @@ public class ProductController {
         return "cart";
     }
 
+    /**
+     * 修改购物车商品数量
+     * @param prodId 商品ID
+     * @param buyNum 购买数量
+     * @param request 请求参数 从session域中获取购物车map,如果没有则创建一个
+     * @return 转向购物车页面
+     */
     @RequestMapping(value = "/updatecart/{prodId}/{buyNum}")
     public String updateCart(@PathVariable Long prodId,
                              @PathVariable Integer buyNum,
                              HttpServletRequest request){
         Product prod = productService.getProductById(prodId);
         Object cartObject = request.getSession().getAttribute("cart");
-        Map<Product,Integer> cart = null;
+        Map<Product,Integer> cart;
         if (cartObject!=null){
             cart = (Map<Product, Integer>) cartObject;
         }else {
@@ -441,6 +452,12 @@ public class ProductController {
         return "cart";
     }
 
+    /**
+     * 检查商品库存
+     * @param prodId 商品ID
+     * @param buyNum 购买数量
+     * @param response 响应参数 若库存大于购买数,向输出true,反之输出false
+     */
     @RequestMapping(value = "/checkprodstock/{prodId}/{buyNum}",method = RequestMethod.GET)
     public void checkProductStock(@PathVariable Long prodId,
                                   @PathVariable Integer buyNum,
@@ -449,12 +466,14 @@ public class ProductController {
             try {
                 response.getWriter().write("false");
             } catch (IOException e) {
+                logger.info("response输出流接口,IO异常,异常信息:"+e);
                 e.printStackTrace();
             }
         }else {
             try {
                 response.getWriter().write("true");
             } catch (IOException e) {
+                logger.info("response输出流接口,IO异常,异常信息:"+e);
                 e.printStackTrace();
             }
         }

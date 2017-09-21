@@ -2,6 +2,9 @@ package com.tamll.learn.redis;
 
 import java.util.List;
 
+/**
+ * redis操作接口
+ */
 public interface JedisClient {
 
     Object get(String key);

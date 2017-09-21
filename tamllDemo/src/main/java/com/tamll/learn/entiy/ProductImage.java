@@ -1,10 +1,12 @@
 package com.tamll.learn.entiy;
 
 
+import java.io.Serializable;
+
 /**
  * 商品图片实体类
  */
-public class ProductImage {
+public class ProductImage implements Serializable{
 
     //商品图片ID
     private Integer product_Image_Id;

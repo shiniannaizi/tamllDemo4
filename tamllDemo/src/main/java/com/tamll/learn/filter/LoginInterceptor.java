@@ -2,7 +2,7 @@ package com.tamll.learn.filter;
 
 import com.tamll.learn.constant.CommonConstant;
 import com.tamll.learn.entiy.User;
-import com.tamll.learn.service.UserService;
+import com.tamll.learn.service.impl.UserServiceImpl;
 import com.tamll.learn.utils.CookieUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     /**
      * 拦截处理自动登录的user对象

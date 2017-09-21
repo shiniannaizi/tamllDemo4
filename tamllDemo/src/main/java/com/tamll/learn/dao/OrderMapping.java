@@ -31,4 +31,6 @@ public interface OrderMapping {
     List<Order> selectNoFinOrder(Integer status);
 
     List<Order> selectPageOrder(Map<String,Object> map);
+
+    List<Order> selectDateOrderList(Integer datesize);
 }

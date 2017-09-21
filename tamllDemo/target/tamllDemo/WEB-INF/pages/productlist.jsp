@@ -15,13 +15,13 @@
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
     <title>商品列表</title>
-    <link href="<%=request.getContextPath()%>/DataTables/css/prodList.css" rel="stylesheet" type="text/css">
+    <link href="${context}/DataTables/css/prodList.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <%@include file="/_head.jsp"%>
 <div id="content">
     <div id="search_div">
-        <form method="post" action="">
+        <form method="post" action="/productlist">
             <span class="input_span">商品名：<input type="text" name="name" value="${name}"/></span>
             <span class="input_span">商品种类：<input type="text" name="category" value="${category }"/></span>
             <span class="input_span">商品价格区间：<input type="text" name="minprice" value="${minprice}"/> -

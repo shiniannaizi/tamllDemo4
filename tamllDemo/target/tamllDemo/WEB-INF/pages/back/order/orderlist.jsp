@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
   Created by IntelliJ IDEA.
   User: 肖松
@@ -20,13 +21,15 @@
 </head>
 <body STYLE="background-image: none;font-size: 15px;margin-left: 220px">
 <h1>订单列表</h1>
-<a href="<c:url value="/backend/pageorderlist/${0}"/>">分页查询</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="<c:url value="/backend/pageorderlist/${-3}"/>">上一页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="<c:url value="/backend/pageorderlist/${3}"/>">下一页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/pageorderlist/${0}/${fn:length(orderlist)}"/>">分页查询</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/pageorderlist/${-3}/${fn:length(orderlist)}"/>">上一页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/pageorderlist/${3}/${fn:length(orderlist)}"/>">下一页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="<c:url value="/backend/orderliststatus/${0}"/>">未支付</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="<c:url value="/backend/orderliststatus/${1}"/>">未发货</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="<c:url value="/backend/orderliststatus/${2}"/>">未收货</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="<c:url value="/backend/orderliststatus/${3}"/>">已完成</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/dateorderlist/${3}"/>">近三天</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="<c:url value="/backend/dateorderlist/${7}"/>">近一周</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <c:forEach items="${orderlist }" var="order">
     <dl class="Order_information">
         <dt>
@@ -54,10 +57,10 @@
                 发货人：${order.order_Post_Name}
             </c:if>
             <c:if test="${order.order_Status==3 }">
-                <font color="blue">已完成</font>
+                <font color="blue">已完成</font>&nbsp;&nbsp;&nbsp;
                 收货时间：<fmt:formatDate value="${order.order_Confim_Date}"
-                                     type="both" dateStyle="medium" timeStyle="medium"/>
-                删除<br />
+                                     type="both" dateStyle="medium" timeStyle="medium"/>&nbsp;&nbsp;&nbsp;
+                <a href="<c:url value="/backend/orderinfo/${order.order_Number}"/>">订单详情</a><br />
             </c:if>
             </div>
             收货地址：${order.order_Recive_Info}<br/>

@@ -37,6 +37,17 @@
             <c:if test="${order.order_Status==1 }">
                 <font color="blue">已支付</font><br/>
             </c:if>
+            <c:if test="${order.order_Status==2 }">
+                <font color="blue">送货中</font>&nbsp;&nbsp;&nbsp;
+                <a href="<c:url value="/updateorder/${order.order_Number}/${3}"></c:url>">确认收货</a><br/>
+            </c:if>
+            <c:if test="${order.order_Status==3 }">
+                <font color="blue">已完成</font>&nbsp;&nbsp;&nbsp;
+                <a href="<c:url value="/orderreturn/${order.order_Number}"/> ">申请退款</a><br/>
+            </c:if>
+            <c:if test="${order.order_Status==4}">
+                <font color="red">处理中</font><br/>
+            </c:if>
             收货地址：${order.order_Recive_Info}<br/>
             支付方式：在线支付
         </dd>

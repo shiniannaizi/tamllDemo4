@@ -13,17 +13,18 @@ public interface PropertyValueMapping {
 
     int insert(PropertyValue propertyValue);
 
-    List<PropertyValue> selectPropertyValueByProductId(long productId);
+    List<PropertyValue> selectFullPropertyValueByProductId(long productId);
 
     List<PropertyValue> selectPropertyValueByPropertyId(Integer propertyId);
 
     PropertyValue selectFullePropertyValue(Integer propertyValueId);
 
-    int updatePropertyValueByProductIdAndPropertyId(@Param("productId")long productId,
+    void updatePropertyValueByProductIdAndPropertyId(@Param("property_Value_Value") String value,
+                                                    @Param("productId")long productId,
                                                     @Param("propertyId")Integer propertyId);
 
     int deletePropertyValueByProductIdAndPropertyId(@Param("productId")long productId,
                                                     @Param("propertyId")Integer propertyId);
 
-    int deletePropertyValueByProductId(long productId);
+    void deletePropertyValueByProductId(long productId);
 }

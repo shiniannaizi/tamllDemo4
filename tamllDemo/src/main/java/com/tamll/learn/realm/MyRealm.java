@@ -1,7 +1,7 @@
 package com.tamll.learn.realm;
 
 import com.tamll.learn.entiy.User;
-import com.tamll.learn.service.UserService;
+import com.tamll.learn.service.impl.UserServiceImpl;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -12,10 +12,13 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * shiro权限过滤类
+ */
 public class MyRealm extends AuthorizingRealm {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {

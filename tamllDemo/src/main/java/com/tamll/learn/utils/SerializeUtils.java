@@ -4,11 +4,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 序列化工具类
+ */
 public class SerializeUtils {
     /**
      * 序列化
-     * @param object
-     * @return
+     * @param object 要序列化的对象
+     * @return 返回序列化的二进制数组
      */
     public static byte[] serialize(Object object) {
         if (object == null) {
@@ -34,9 +37,8 @@ public class SerializeUtils {
 
     /**
      * 反序列化
-     *
-     * @param bytes
-     * @return
+     * @param bytes 要反序列化的二进制数组
+     * @return 返回反序列化出的对象
      */
     public static Object unserialize(byte[] bytes) {
         if (bytes == null) {
@@ -60,9 +62,8 @@ public class SerializeUtils {
 
     /**
      * 序列化 list 集合
-     *
-     * @param list
-     * @return
+     * @param list 要序列化的list集合
+     * @return 返回序列化后的二进制数组
      */
     public static byte[] serializeList(List<?> list) {
 
@@ -90,9 +91,8 @@ public class SerializeUtils {
 
     /**
      * 反序列化 list 集合
-     *
-     * @param bytes
-     * @return
+     * @param bytes 要反序列化的二进制数组
+     * @return 返回反序列化出的list集合
      */
     public static List<?> unserializeList(byte[] bytes) {
         if (bytes == null) {
@@ -125,7 +125,7 @@ public class SerializeUtils {
     /**
      * 关闭io流对象
      *
-     * @param closeable
+     * @param closeable 流对象
      */
     public static void close(Closeable closeable) {
         if (closeable != null) {

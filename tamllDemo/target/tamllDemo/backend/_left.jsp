@@ -83,7 +83,7 @@
     <div><a href="javascript:void(0)" onclick="openDiv(this)">> 订单管理</a>
         <ul>
             <li><a href="${path}/backend/orderlist" target="rightFrame">全部订单</a></li>
-            <li><a>asdsad</a></li>
+            <li><a href="${path}/backend/orderliststatus/${4}" target="rightFrame">退款通知</a></li>
         </ul>
     </div>
     <div><a href="${path}/backend/salelist" target="rightFrame" onclick="openDiv(this)">> 销售榜单</a>

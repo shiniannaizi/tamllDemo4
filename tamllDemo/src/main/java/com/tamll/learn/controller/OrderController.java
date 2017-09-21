@@ -2,14 +2,15 @@ package com.tamll.learn.controller;
 
 import com.tamll.learn.constant.CommonConstant;
 import com.tamll.learn.entiy.*;
-import com.tamll.learn.service.*;
+import com.tamll.learn.service.OrderItemService;
+import com.tamll.learn.service.OrderService;
+import com.tamll.learn.service.ReciveService;
 import com.tamll.learn.utils.MapUtils;
 import com.tamll.learn.utils.PaymentUtils;
 import com.tamll.learn.utils.PropUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,9 +41,6 @@ public class OrderController {
     @Autowired
     private OrderItemService orderItemService;
 
-    @Autowired
-    private ProductService productService;
-
     /**
      * 添加订单
      * @param reciveId 收货信息ID
@@ -62,23 +60,9 @@ public class OrderController {
         }
         Object objectUser = request.getSession().getAttribute(CommonConstant.USER_CONTEXT);
         User user = (User) objectUser;
-        Order order = new Order();
-        order.setOrder_Number(UUID.randomUUID().toString());
-        double money = 0;
-        int number = 0;
         Map<Product,Integer> cart = (Map<Product, Integer>) cartObject;
-        for (Map.Entry<Product,Integer> entry:cart.entrySet()){
-            orderItemService.insertOrderItem(entry.getKey().getProduct_Id(),user.getUser_Id(),
-                    entry.getValue(),order);
-            Product product = productService.getProductById(entry.getKey().getProduct_Id());
-            product.setProduct_Stock(product.getProduct_Stock()-entry.getValue());
-            productService.updateProductStock(product);
-            money += entry.getKey().getProduct_Orignal_Price()*entry.getValue();
-            number += entry.getValue();
-        }
         request.getSession().removeAttribute("cart");
-        orderService.insertOrder(order.getOrder_Number(),new Date(),money,
-                number,CommonConstant.UN_PAY,reciveInfo);
+        orderService.insertOrder(reciveInfo,cart,user);
         return "redirect:/myorderlist";
     }
 
@@ -106,29 +90,17 @@ public class OrderController {
     /**
      * 删除订单
      * @param orderNumber 订单编号
-     * @param request 请求参数
      * @param response 响应参数 向页面返回错误信息
      * @return 返回我的订单页
      * @throws IOException 抛出读写异常
      */
     @RequestMapping(value = "/deleteorder/{orderNumber}")
     public String deleteOrder(@PathVariable String orderNumber,
-                              HttpServletRequest request,
                               HttpServletResponse response) throws IOException {
-        Order order = orderService.getOrderByNumber(orderNumber);
-        if (order.getOrder_Status()!=0){
+        if (orderService.getOrderByNumber(orderNumber).getOrder_Status()!=0){
             response.getWriter().write("只有未支付的订单才能删除");
             return "order_list";
         }
-        List<OrderItem> orderItems = orderItemService.getOrderItemListByOrderNumber(orderNumber);
-        for (OrderItem orderItem:orderItems){
-            System.out.println(orderItem.getProduct().getProduct_Name());
-            System.out.println(orderItem.getProduct().getProduct_Stock());
-            Product product = orderItem.getProduct();
-            product.setProduct_Stock(product.getProduct_Stock()+orderItem.getOrderItem_Product_Number());
-            productService.updateProductStock(product);
-        }
-        orderItemService.deleteOrderItemByOrderNumber(orderNumber);
         orderService.deleteOrderByNumber(orderNumber);
         return "redirect:/myorderlist";
     }
@@ -350,6 +322,11 @@ public class OrderController {
         return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.OK);
     }
 
+    /**
+     * 打开后台订单列表
+     * @param request 请求参数 向页面返回订单列表
+     * @return 转向后台订单列表页面
+     */
     @RequestMapping(value = "/backend/orderlist")
     public String backOrderList(HttpServletRequest request){
         List<Order> orders = orderService.getAllOrder();
@@ -361,6 +338,12 @@ public class OrderController {
         return "back/order/orderlist";
     }
 
+    /**
+     * 后台根据订单状态查询订单
+     * @param status 订单状态
+     * @param request 请求参数 向前台返回订单列表
+     * @return 转向后台订单列表页面
+     */
     @RequestMapping(value = "/backend/orderliststatus/{status}")
     public String backOrderListStatus(@PathVariable Integer status,
                                       HttpServletRequest request){
@@ -369,9 +352,19 @@ public class OrderController {
             order.setOrderItems(orderItemService.getOrderItemListByOrderNumber(order.getOrder_Number()));
         }
         request.setAttribute("orderlist",orders);
+        if (status==4){
+            return "back/order/returnlist";
+        }
         return "back/order/orderlist";
     }
 
+    /**
+     * 后台更改订单
+     * @param orderNumber 订单号
+     * @param status 订单状态
+     * @param request 请求参数 获取登陆的管理员
+     * @return 转向后台订单列表页面
+     */
     @RequestMapping(value = "/backend/updateorderlist/{orderNumber}/{status}")
     public String updateOrderList(@PathVariable String orderNumber,
                                   @PathVariable Integer status,
@@ -386,9 +379,39 @@ public class OrderController {
         return "redirect:/backend/orderlist";
     }
 
-    @RequestMapping(value = "/backend/pageorderlist/{beginrow}")
+    /**
+     * 前台更改订单状态
+     * @param orderNumber 订单编号
+     * @param status 订单状态
+     * @return 转向我的订单页面
+     */
+    @RequestMapping(value = "/updateorder/{orderNumber}/{status}")
+    public String updateOrder(@PathVariable String orderNumber,
+                              @PathVariable Integer status){
+        Order order = orderService.getOrderByNumber(orderNumber);
+        order.setOrder_Status(status);
+        order.setOrder_Confim_Date(new Date());
+        orderService.updateOrderByNumber(order);
+        return "redirect:/myorderlist";
+    }
+
+    /**
+     * 后台订单分页查询
+     * @param beginrow 查询开始行
+     * @param listsize 一次查询的数目
+     * @param request 请求参数 向页面返回订单列表
+     * @return 转向后台订单列表页面
+     */
+    @RequestMapping(value = "/backend/pageorderlist/{beginrow}/{listsize}")
     public String pagingOrderList(@PathVariable Integer beginrow,
+                                  @PathVariable Integer listsize,
                                   HttpServletRequest request){
+        if (listsize<3){
+            beginrow = 0;
+        }
+        if (beginrow == 0){
+            CommonConstant.beginRow = 0;
+        }
         Map<String,Object> map = new LinkedHashMap<String, Object>();
         CommonConstant.beginRow += beginrow;
         if (CommonConstant.beginRow<=0){
@@ -402,5 +425,50 @@ public class OrderController {
         }
         request.setAttribute("orderlist",orders);
         return "back/order/orderlist";
+    }
+
+    /**
+     * 查询日期区间内的订单
+     * @param datesize 日期区间(?日)
+     * @param request 请求参数 向前台返回订单列表
+     * @return 转向后台订单列表
+     */
+    @RequestMapping(value = "/backend/dateorderlist/{datesize}")
+    public String dateOrderList(@PathVariable Integer datesize,
+                                HttpServletRequest request){
+        List<Order> orders = orderService.getDateOrderList(datesize);
+        for (Order order:orders){
+            order.setOrderItems(orderItemService.getOrderItemListByOrderNumber(order.getOrder_Number()));
+        }
+        request.setAttribute("orderlist",orders);
+        return "back/order/orderlist";
+    }
+
+    /**
+     * 后台查看订单详情
+     * @param orderNumber 订单编号
+     * @param request 请求参数 向页面返回订单
+     * @return 转向后台订单详情页面
+     */
+    @RequestMapping(value = "/backend/orderinfo/{orderNumber}")
+    public String orderInfoPage(@PathVariable String orderNumber,
+                                HttpServletRequest request){
+        Order order = orderService.getOrderByNumber(orderNumber);
+        order.setOrderItems(orderItemService.getOrderItemListByOrderNumber(orderNumber));
+        request.setAttribute("order",order);
+        return "back/order/orderinfo";
+    }
+
+    /**
+     * 用户申请退款
+     * @param orderNumber 订单编号
+     * @return 重定向到我的订单列表
+     */
+    @RequestMapping(value = "/orderreturn/{orderNumber}")
+    public String orderReturn(@PathVariable String orderNumber){
+        Order order = orderService.getOrderByNumber(orderNumber);
+        order.setOrder_Status(CommonConstant.RETURN);
+        orderService.updateOrderByNumber(order);
+        return "redirect:/myorderlist";
     }
 }
