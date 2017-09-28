@@ -126,7 +126,8 @@
             </div>
             <div id="right_bottom">
                 <input type="hidden" id="pid" value="${product.product_Id}"/>
-                <input class="add_cart_but" id="updatecart" type="button" value=""/>
+                <input class="add_cart_but" id="updatecart" type="button" value=""/><br/>
+                <a href="/prodreview/${product.product_Id}" style="font-size: 24px;margin-left: 550px">商品评价</a>
             </div>
         </div>
     </form>

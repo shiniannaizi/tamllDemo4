@@ -6,6 +6,7 @@ import com.tamll.learn.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -43,6 +44,12 @@ public class UserServiceImpl implements UserService{
      */
     public User getUserByName(String userName){
         return userMapping.selectByUserName(userName);
+    }
+
+
+    @Override
+    public List<User> getFullUserList() {
+        return userMapping.selectFullUserList();
     }
 
     /**
@@ -124,4 +131,6 @@ public class UserServiceImpl implements UserService{
     public Set<String> getRoleByName(String userName){
         return userMapping.selectRoleByName(userName);
     }
+
+
 }

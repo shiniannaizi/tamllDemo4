@@ -47,6 +47,15 @@
         <property name="timeBetweenEvictionRunsMillis" value="20000"/>
         <property name="numTestsPerEvictionRun" value="100"/>
     </bean>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="mapperLocations" value="classpath:/com/*.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeHandlers" ref="userTypeHandler"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.tamll.learn.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
     <!-- 连接配置 -->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxTotal" value="30" />
@@ -93,15 +102,24 @@
         <property name="loginUrl" value="/login.jsp"/>
         <!-- 权限认证失败，则跳转到指定页面 -->
         <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
+        <property name="filters">
+            <map>
+                <entry key="anyRoles">
+                    <bean class="com.tamll.learn.filter.RolesAuthorizationFilter"/>
+                </entry>
+            </map>
+        </property>
         <!-- Shiro连接约束配置,即过滤链的定义 -->
         <property name="filterChainDefinitions">
             <value>
                 /doLogin=anon
-                /backend/**=roles[admin]
+                /backend/**=anyRoles["superadmin,admin"]
+                /management/**=roles[superadmin],perms[supermanager]
             </value>
         </property>
     </bean>
-
+    <!--自定义的Roles Filter-->
+    <bean id="anyRoles" class="com.tamll.learn.filter.RolesAuthorizationFilter"/>
     <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 
@@ -111,15 +129,6 @@
         <property name="securityManager" ref="securityManager"/>
     </bean>
 
-    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="mapperLocations" value="classpath:/com/*.xml"/>
-        <property name="dataSource" ref="dataSource"/>
-        <property name="typeHandlers" ref="userTypeHandler"/>
-    </bean>
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.tamll.learn.dao"/>
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
-    </bean>
     <aop:config>
         <aop:advisor pointcut="execution(* com.tamll.learn.*service.*(..))" advice-ref="txAdvice" />
     </aop:config>

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,7 +78,7 @@ public class UserController {
     public String dologin(@RequestParam("username") String userName,
                         @RequestParam("password") String userPassword,
                         HttpServletRequest request,
-                          HttpServletResponse response) throws UnsupportedEncodingException {
+                        HttpServletResponse response) throws UnsupportedEncodingException {
         if (WebUtils.isNull(userName)){
             request.setAttribute("errMsg", "用户名不能为空");
             return "forward:/login.jsp";
@@ -661,4 +662,11 @@ public class UserController {
             }
         }
     }
+
+    @RequestMapping(value = "/management/userlist")
+    public String userList(HttpServletRequest request){
+        request.setAttribute("users",userService.getFullUserList());
+        return "back/user/userlist";
+    }
+
 }

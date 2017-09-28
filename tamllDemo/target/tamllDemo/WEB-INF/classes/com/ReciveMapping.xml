@@ -48,10 +48,11 @@
         where user_recive_id = #{user_Recive_Id,jdbcType=INTEGER}
     </select>
     <insert id="insert" parameterType="com.tamll.learn.entiy.Recive">
-        insert into recive (user_recive_name, user_recive_phone, user_recive_address,user_recive_detail_address,user_id)
+        insert into recive (user_recive_name, user_recive_phone,user_id, user_recive_address,user_recive_detail_address)
         values(#{user_Recive_Name,jdbcType=VARCHAR},#{user_Recive_Phone,jdbcType=VARCHAR},
-        #{user_Recive_Address,jdbcType=VARCHAR},#{user_Recive_Detail_Address,jdbcType=VARCHAR},
-        #{user,javaType=com.tamll.learn.entiy.User,jdbcType=INTEGER,typeHandler=com.tamll.learn.handler.UserTypeHandler})
+               #{user,javaType=com.tamll.learn.entiy.User,jdbcType=INTEGER,
+               typeHandler=com.tamll.learn.handler.UserTypeHandler},
+               #{user_Recive_Address,jdbcType=VARCHAR},#{user_Recive_Detail_Address,jdbcType=VARCHAR})
     </insert>
     <update id="updateByReciveId" parameterType="java.lang.Integer">
         update recive

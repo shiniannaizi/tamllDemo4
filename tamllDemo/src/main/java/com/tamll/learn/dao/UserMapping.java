@@ -2,6 +2,7 @@ package com.tamll.learn.dao;
 
 import com.tamll.learn.entiy.User;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -13,9 +14,13 @@ public interface UserMapping {
 
     int insert(User user);
 
+    void insertManager(User user);
+
     User selectByUserName(String userName);
 
     User selectByUserId(int userId);
+
+    List<User> selectFullUserList();
 
     Set<String> selectRoleByName(String userName);
 

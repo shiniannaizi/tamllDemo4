@@ -27,7 +27,7 @@ public class User implements Serializable{
     private String user_Email;
 
     //用户权限
-    private String user_Role;
+    private Role role;
 
     //用户账号状态
     private int state;//0表示未激活,1表示激活
@@ -111,12 +111,11 @@ public class User implements Serializable{
         this.user_Email = user_Email;
     }
 
-    public String getUser_Role() {
-        return user_Role;
+    public Role getRole() {
+        return role;
     }
 
-    public void setUser_Role(String user_Role) {
-        this.user_Role = user_Role;
+    public void setRole(Role role) {
+        this.role = role;
     }
-
 }

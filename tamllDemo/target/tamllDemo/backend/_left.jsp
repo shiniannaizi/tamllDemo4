@@ -70,14 +70,14 @@
     </div>
     <div><a href="javascript:void(0)" onclick="openDiv(this)">> 用户管理</a>
         <ul>
-            <li><a href="#">asdsad</a></li>
-            <li><a href="prod_list.html" target="rightFrame">asdsad</a></li>
+            <li><a href="${path}/management/userlist" target="rightFrame">用户列表</a></li>
+            <li><a href="${path}/management/add/manager" target="rightFrame">新增管理员</a></li>
         </ul>
     </div>
     <div><a href="javascript:void(0)" onclick="openDiv(this)">> 权限管理</a>
         <ul>
-            <li><a>asdsad</a></li>
-            <li><a>asdsad</a></li>
+            <li><a href="${path}/management/rolelist" target="rightFrame">角色列表</a></li>
+            <li><a href="#" target="rightFrame">asdsad</a></li>
         </ul>
     </div>
     <div><a href="javascript:void(0)" onclick="openDiv(this)">> 订单管理</a>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tamll.learn.dao.RoleMapping" >
+    <resultMap id="BaseResultMap" type="com.tamll.learn.entiy.Role">
+        <id column="role_id" property="role_Id" jdbcType="INTEGER"/>
+        <result column="rolename" property="role_Name" jdbcType="VARCHAR"/>
+
+        <collection property="rights" ofType="com.tamll.learn.entiy.Right">
+            <id column="right_id" property="right_Id" jdbcType="INTEGER"/>
+            <result column="right_name" property="right_Name" jdbcType="VARCHAR"/>
+            <result column="right_describe" property="right_Describe" jdbcType="VARCHAR"/>
+        </collection>
+
+        <collection property="users" ofType="com.tamll.learn.entiy.User">
+            <id column="user_id" property="user_Id" jdbcType="INTEGER" />
+            <result column="user_name" property="user_Name" jdbcType="VARCHAR" />
+            <result column="user_sex" property="user_Sex" jdbcType="VARCHAR" />
+            <result column="user_password" property="user_Password" jdbcType="VARCHAR" />
+            <result column="user_address" property="user_Address" jdbcType="VARCHAR" />
+            <result column="user_email" property="user_Email" jdbcType="VARCHAR" />
+            <result column="state" property="state" jdbcType="INTEGER" />
+            <result column="user_role" property="user_Role" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+    <insert id="insert" parameterType="com.tamll.learn.entiy.Role">
+        INSERT INTO t_role(rolename)
+                VALUES (#{role_Name,jdbcType=VARCHAR})
+    </insert>
+    <insert id="setRight">
+        INSERT INTO t_roleright(role_id,right_id)
+                VALUES (#{roleId,jdbcType=INTEGER},
+                #{rightId,jdbcType=INTEGER})
+    </insert>
+    <select id="selectRightsByRoleName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT ro.*,ri.*
+        FROM t_role ro,t_right ri,t_roleright rr
+        WHERE ro.role_id=rr.role_id AND ri.right_id=rr.right_id AND ro.rolename=#{roleName,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllRoles" resultMap="BaseResultMap">
+        SELECT ro.*,ri.*
+        FROM t_role ro,t_right ri,t_roleright rr
+        WHERE ro.role_id=rr.role_id AND ri.right_id=rr.right_id
+    </select>
+    <select id="selectRoleByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT *
+        FROM t_role
+        WHERE rolename=#{roleName,jdbcType=VARCHAR}
+    </select>
+</mapper>

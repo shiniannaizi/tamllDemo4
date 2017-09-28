@@ -14,7 +14,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div id="content1">
 			<c:if test="${!empty USER_CONTEXT.user_Name}">
 				<a href="<%=basePath %>/userinfo/${USER_CONTEXT.user_Id}">${USER_CONTEXT.user_Name}</a>
-                ,&nbsp;&nbsp;欢迎您的到来,<shiro:hasRole name="admin">管理员</shiro:hasRole>
+                ,&nbsp;&nbsp;欢迎您的到来,<shiro:hasAnyRoles name="superadmin,admin">管理员</shiro:hasAnyRoles>
 				<a href="<c:url value="/doLogout"/>">&nbsp;&nbsp;退出</a>
 			</c:if>
             <c:if test="${empty USER_CONTEXT.user_Name}">
@@ -30,6 +30,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<span id="goto">
 			<a id="goto_order" href="/myorderlist">我的订单</a>
 			<a id="goto_cart" href="/mycart">我的购物车</a>
+			<a id="goto_review" href="/myprodreview">我的留言</a>
 		</span>
 		<img id="erwm" src="<%=request.getContextPath() %>/DataTables/img/head/qr.jpg"/>
 	</div>

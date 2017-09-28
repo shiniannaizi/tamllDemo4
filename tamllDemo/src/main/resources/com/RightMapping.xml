@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tamll.learn.dao.RightMapping" >
+    <resultMap id="BaseResultMap" type="com.tamll.learn.entiy.Right">
+        <id column="right_id" property="right_Id" jdbcType="INTEGER"/>
+        <result column="right_name" property="right_Name" jdbcType="VARCHAR"/>
+        <result column="right_describe" property="right_Describe" jdbcType="VARCHAR"/>
+
+        <collection property="roles" ofType="com.tamll.learn.entiy.Role">
+            <id column="role_id" property="role_Id" jdbcType="INTEGER"/>
+            <result column="rolename" property="role_Name" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+    <select id="selectAllRights" resultMap="BaseResultMap">
+        SELECT *
+        FROM t_right
+    </select>
+    <select id="selectRightByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT *
+        FROM t_right
+        WHERE right_name=#{right_Name,jdbcType=VARCHAR}
+    </select>
+    <insert id="insert" parameterType="com.tamll.learn.entiy.Right">
+        INSERT INTO t_right(right_name,right_describe)
+                VALUES (#{right_Name,jdbcType=VARCHAR},
+                #{right_Describe,jdbcType=VARCHAR})
+    </insert>
+</mapper>

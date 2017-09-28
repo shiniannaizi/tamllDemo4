@@ -22,8 +22,9 @@ import java.sql.SQLException;
 @MappedTypes(User.class)
 public class UserTypeHandler extends BaseTypeHandler<User> {
 
-    public void setNonNullParameter(PreparedStatement preparedStatement, int i, User user, JdbcType jdbcType) throws SQLException {
-        preparedStatement.setString(5,String.valueOf(user.getUser_Id()));
+    public void setNonNullParameter(PreparedStatement preparedStatement, int i, User user,
+                                    JdbcType jdbcType) throws SQLException {
+        preparedStatement.setString(3,String.valueOf(user.getUser_Id()));
     }
 
     public User getNullableResult(ResultSet resultSet, String s) throws SQLException {

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tamll.learn.dao.ReviewMapping" >
+    <resultMap id="BaseResultMap" type="com.tamll.learn.entiy.Review">
+        <id column="review_id" property="review_Id" jdbcType="INTEGER"/>
+        <result column="review_content" property="review_Content" jdbcType="VARCHAR"/>
+        <result column="review_create_date" property="review_Create_Date" jdbcType="TIMESTAMP"/>
+
+        <association property="user" javaType="com.tamll.learn.entiy.User">
+            <id column="user_id" property="user_Id" jdbcType="INTEGER" />
+            <result column="user_name" property="user_Name" jdbcType="VARCHAR" />
+            <result column="user_sex" property="user_Sex" jdbcType="VARCHAR" />
+            <result column="user_password" property="user_Password" jdbcType="VARCHAR" />
+            <result column="user_address" property="user_Address" jdbcType="VARCHAR" />
+            <result column="user_email" property="user_Email" jdbcType="VARCHAR" />
+            <result column="state" property="state" jdbcType="INTEGER" />
+            <result column="user_role" property="user_Role" jdbcType="VARCHAR"/>
+        </association>
+
+        <association property="product" javaType="com.tamll.learn.entiy.Product">
+            <id column="product_id" property="product_Id" jdbcType="BIGINT"/>
+            <result property="product_Name" column="product_name" jdbcType="VARCHAR"/>
+            <result column="product_orignal_price" property="product_Orignal_Price" jdbcType="DOUBLE"/>
+            <result column="product_promote_price" property="product_Promote_Price" jdbcType="DOUBLE"/>
+            <result column="product_stock" property="product_Stock" jdbcType="INTEGER"/>
+            <result column="product_update_date" property="product_Update_Date" jdbcType="TIMESTAMP"/>
+            <result column="product_create_date" property="product_Create_Date" jdbcType="TIMESTAMP"/>
+            <result column="product_subtitle" property="product_Subtitle" jdbcType="CLOB"/>
+            <result column="product_first_image" property="product_First_Image" jdbcType="VARCHAR"/>
+            <result column="product_status" property="product_Status" jdbcType="INTEGER"/>
+        </association>
+    </resultMap>
+    <insert id="insert" parameterType="com.tamll.learn.entiy.Review">
+        INSERT INTO review (review_content,review_product_id,review_user_id,review_create_date)
+                VALUES (#{review_Content,jdbcType=VARCHAR},
+                        #{product,jdbcType=BIGINT,javaType=com.tamll.learn.entiy.Product,
+                        typeHandler=com.tamll.learn.handler.ProductTypeHandler},
+                        #{user,javaType=com.tamll.learn.entiy.User,jdbcType=INTEGER,
+                        typeHandler=com.tamll.learn.handler.UserTypeHandler},
+                        #{review_Create_Date,jdbcType=TIMESTAMP})
+    </insert>
+    <select id="selectReviewsByProductId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+            r.*,p.*,u.*
+        FROM review r
+        LEFT OUTER JOIN product p ON p.product_id=r.review_product_id
+        LEFT OUTER JOIN user u  ON u.user_id=r.review_user_id
+        WHERE r.review_product_id=#{productId,jdbcType=BIGINT}
+    </select>
+    <select id="selectReviewsByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+            r.*,p.*,u.*
+        FROM review r
+        LEFT OUTER JOIN product p ON p.product_id=r.review_product_id
+        LEFT OUTER JOIN user u  ON u.user_id=r.review_user_id
+        WHERE r.review_user_id=#{userId,jdbcType=INTEGER}
+    </select>
+    <select id="selectReviewInfo" resultMap="BaseResultMap">
+        SELECT
+            r.*,p.*,u.*
+        FROM review r
+            LEFT OUTER JOIN product p ON p.product_id=r.review_product_id
+            LEFT OUTER JOIN user u  ON u.user_id=r.review_user_id
+        WHERE review_product_id=#{productId,jdbcType=BIGINT}
+              AND review_user_id=#{userId,jdbcType=INTEGER}
+    </select>
+    <update id="updateReviewInfo" parameterType="com.tamll.learn.entiy.Review">
+        UPDATE review
+        SET review_content=#{review_Content,jdbcType=VARCHAR}
+        WHERE review_product_id=#{product,jdbcType=BIGINT,javaType=com.tamll.learn.entiy.Product,
+                        typeHandler=com.tamll.learn.handler.ProductTypeHandler}
+        AND review_user_id=#{user,javaType=com.tamll.learn.entiy.User,jdbcType=INTEGER,
+                        typeHandler=com.tamll.learn.handler.UserTypeHandler}
+    </update>
+    <delete id="deleteReview">
+        DELETE FROM review
+        WHERE review_product_id=#{productId,jdbcType=BIGINT}
+        AND review_user_id=#{userId,jdbcType=INTEGER}
+    </delete>
+</mapper>

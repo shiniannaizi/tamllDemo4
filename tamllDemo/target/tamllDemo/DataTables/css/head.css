@@ -79,7 +79,12 @@ body{
 }
 #common_head #line2 #goto #goto_cart{
 	padding-left:8px;
-	padding-right:10px;
+	padding-right:8px;
+	border-left:1px solid #E5E5E5;
+}
+#common_head #line2 #goto #goto_review{
+	padding-left:10px;
+	margin-right:10px;
 	border-left:1px solid #E5E5E5;
 }
 /*第三行*/
